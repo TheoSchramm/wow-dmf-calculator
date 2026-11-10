@@ -112,6 +112,11 @@ def main():
     ticket = fetch("ICONS/INV_Misc_Ticket_Darkmoon_01")
     save(crest(64, ring, ticket), "favicon")
     save(crest(32, ring, ticket), "favicon-32")
+    # big copy for the README header (docs/ is not part of the published site)
+    docs = os.path.join(OUT, "..", "..", "docs")
+    os.makedirs(docs, exist_ok=True)
+    crest(192, ring, ticket).save(os.path.join(docs, "logo.png"), optimize=True)
+    print("  ../../docs/logo.png  192x192")
     save(crop_alpha(fetch("GossipFrame/AvailableQuestIcon")), "quest-icon")   # yellow "!" from NPC quest lists
     for coin in ("Gold", "Silver", "Copper"):
         save(fetch(f"MONEYFRAME/UI-{coin}Icon"), f"coin-{coin.lower()}")

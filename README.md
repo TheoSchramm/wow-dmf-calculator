@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" width="192" height="192" alt="Darkmoon Faire Prize Ticket in a gold ring">
+</p>
+
 # DMF Turn-in Calculator
 
 Finds the cheapest Darkmoon Faire profession turn-ins (Animal Parts, Blacksmithing,
