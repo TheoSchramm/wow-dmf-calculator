@@ -58,7 +58,7 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
 
 ## Crafting your own turn-ins
 
-Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in step 1, or pass
+Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in step 2, or pass
 `--prof Engineering:260,Leatherworking` to the CLI (`:skill` is optional, default 300). For those turn-ins the price becomes the cheaper of the auction
 price and the price of the materials, taken from the same Auctionator file, and the route says "Craft ..." with the
 materials to gather. Every material needs an Auctionator price (vendor materials such as thread and dyes too, so
@@ -69,7 +69,7 @@ are (a Solid Grinding Stone or Heavy Leather is not broken down further). Recipe
 
 ## Self-found mode (no auction house)
 
-Tick "Self-found" in step 1 of the page (or pass `--ssf` to the CLI) to farm the items instead of buying them.
+Tick "Self-found" in step 2 of the page (or pass `--ssf` to the CLI) to farm the items instead of buying them.
 The planner then minimises expected kills rather than gold, picking for each step the mob with the best drop
 chance that you can fight at your level (up to 2 levels above you), and lists the next best mobs too.
 Only the Animal Parts drop from mobs; the Blacksmithing, Engineering and Leatherworking turn-ins are crafted,
