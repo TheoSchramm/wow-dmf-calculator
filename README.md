@@ -5,6 +5,12 @@ Engineering, Leatherworking) for WoW Forever, using your own Auctionator prices.
 
 **Website: https://theoschramm.github.io/wow-dmf-calculator/**
 
+![The calculator with an Auctionator file loaded: your character, the reward goal and the cheapest turn-ins](docs/screenshots/overview.png)
+
+Hover any item or quest for its in-game tooltip (from Wowhead):
+
+![Wowhead in-game tooltip shown when hovering an item](docs/screenshots/tooltip.png)
+
 ## Web version (GitHub Pages)
 
 Open the [website](https://theoschramm.github.io/wow-dmf-calculator/) (or a local copy of `index.html`),
