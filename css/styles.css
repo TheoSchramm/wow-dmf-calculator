@@ -747,8 +747,8 @@ code {
   border-width: 8px;
   border-image: url("../assets/ui/row.png") 8 fill / 8px stretch;
 }
-.item__title { text-decoration: none; }
-.item__title:hover, .item__title:focus-visible { text-decoration: underline; }
+.item__title { text-decoration: underline dotted; text-underline-offset: 3px; }
+.item__title:hover, .item__title:focus-visible { text-decoration-style: solid; }
 .item__meta { font-size: 12px; color: var(--muted); }
 
 /* "<n> per turn-in to <NPC>" then one quest per line */
@@ -757,12 +757,12 @@ code {
 
 /* NPC names in the same gold Wowhead's NPC tooltips use (#ffd100, the game's NORMAL_FONT_COLOR).
    In game a neutral NPC's nameplate is pure yellow (#ffff00), but this matches the tooltips shown on hover. */
-.npc-link { color: var(--normal); text-decoration: none; }
-.npc-link:hover, .npc-link:focus-visible { text-decoration: underline; color: var(--highlight); }
+.npc-link { color: var(--normal); text-decoration: underline dotted; text-underline-offset: 3px; }
+.npc-link:hover, .npc-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
 
 /* quest links in the quest log's yellow */
-.quest-link { color: var(--normal); text-decoration: none; }
-.quest-link:hover, .quest-link:focus-visible { text-decoration: underline; color: var(--highlight); }
+.quest-link { color: var(--normal); text-decoration: underline dotted; text-underline-offset: 3px; }
+.quest-link:hover, .quest-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
 /* GossipFrame/AvailableQuestIcon: the yellow "!" NPCs show next to quests */
 .quest-link__icon {
   display: inline-block;
