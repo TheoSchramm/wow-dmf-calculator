@@ -4,12 +4,7 @@
   const UI = (window.UI = window.UI || {});
   const {esc, wowhead} = UI;
 
-  function questsLine(r) {
-    const links = r.questList.map(wowhead.questLink);
-    return links.length > 1
-      ? `Quests: ${links[0]}, then repeat ${links.slice(1).join(", ")}`
-      : `Quest: ${links[0]}`;
-  }
+  const npcOf = r => ({id: r.npcId, name: r.npc});
 
   function itemCell(r, isBest) {
     const tags = [];
@@ -20,7 +15,8 @@
         ${wowhead.itemIcon(r, {category: r.category})}
         <span class="item__name">
           <span>${wowhead.itemLink(r)}${tags.join("")}</span>
-          <span class="item__meta">${r.qnt} per turn-in to ${esc(r.npc)} &middot; ${questsLine(r)}</span>
+          <span class="item__meta"><span class="item__qty">${r.qnt}</span> per turn-in to ${wowhead.npcLink(npcOf(r))}</span>
+          <span class="item__quests">${r.questList.map(q => `<span>${wowhead.questLink(q)}</span>`).join("")}</span>
         </span>
       </div>`;
   }
@@ -50,7 +46,7 @@
     return {
       render(rows, {goal, needed, hasPrices}) {
         if (needed <= 0) {
-          summary.innerHTML = `You already have enough tickets for ${wowhead.itemLink(goal)}. Take them to Gelvas Grimegate at the Darkmoon Faire.`;
+          summary.innerHTML = `You already have enough tickets for ${wowhead.itemLink(goal)}. Take them to ${wowhead.npcLink(DMF.TICKET_NPC)} at the Darkmoon Faire.`;
           body.innerHTML = "";
           return;
         }
@@ -59,7 +55,7 @@
           summary.textContent = "Load your Auctionator.lua in step 1 to see which turn-in is cheapest.";
         } else if (best) {
           summary.innerHTML = `Cheapest way: buy <strong>${best.items} &times; ${wowhead.itemLink(best)}</strong>
-            for about ${UI.money(best.total * 10000)}, then turn them in to <strong>${esc(best.npc)}</strong>
+            for about ${UI.money(best.total * 10000)}, then turn them in to ${wowhead.npcLink(npcOf(best))}
             ${best.quests} time${best.quests === 1 ? "" : "s"} for ${wowhead.tickets(needed)} more.`;
         } else {
           summary.textContent = "None of these items has a price in your Auctionator file yet. Search for them at the auction house, then /reload.";

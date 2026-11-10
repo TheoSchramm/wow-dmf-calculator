@@ -675,6 +675,14 @@ code {
 .item__title:hover, .item__title:focus-visible { text-decoration: underline; }
 .item__meta { font-size: 12px; color: var(--muted); }
 
+/* "<n> per turn-in to <NPC>" then one quest per line */
+.item__qty { color: var(--normal); font-family: var(--font-number); font-size: 13px; }
+.item__quests { display: grid; font-size: 12px; line-height: 1.35; }
+
+/* NPC names in the friendly-NPC green */
+.npc-link { color: var(--green); text-decoration: none; }
+.npc-link:hover, .npc-link:focus-visible { text-decoration: underline; color: var(--highlight); }
+
 /* quest links in the quest log's yellow */
 .quest-link { color: var(--normal); text-decoration: none; }
 .quest-link:hover, .quest-link:focus-visible { text-decoration: underline; color: var(--highlight); }

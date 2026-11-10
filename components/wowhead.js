@@ -25,6 +25,9 @@
       return `<span class="tickets">${esc(n)}<img class="tickets__icon" src="${esc(DMF.ICON_URL("inv_misc_ticket_darkmoon_01", "small"))}"
           alt=" tickets" title="Darkmoon Faire Prize Ticket" onerror="this.replaceWith(' tickets')"></span>`;
     },
+    npcLink(npc) {
+      return `<a class="npc-link" href="${esc(DMF.WOWHEAD_NPC_URL(npc.id))}" target="_blank" rel="noopener">${esc(npc.name)}</a>`;
+    },
     questLink(quest) {
       return `<a class="quest-link" href="${esc(DMF.WOWHEAD_QUEST_URL(quest.id))}" target="_blank" rel="noopener"><span class="quest-link__icon" aria-hidden="true"></span>${esc(quest.name)}</a>`;
     },

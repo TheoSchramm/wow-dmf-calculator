@@ -38,10 +38,18 @@ const ITEMS = [
   name, id, category, tier, qnt, icon, quality, questList: quests.map(([id, name]) => ({id, name})),
   minLevel: MIN_LEVEL[tier-1], price: null, live: false,
 }));
-// Darkmoon Faire NPC who takes each category's turn-ins (warcrafttavern.com/forever/guides/darkmoon-faire).
-const NPC = {"Animal Parts": "Yebb Neblegear", "Blacksmithing": "Kerri Hicks", "Engineering": "Rinling", "Leatherworking": "Chronos"};
-for (const it of ITEMS) it.npc = NPC[it.category];
+// Darkmoon Faire NPC who takes each category's turn-ins (warcrafttavern.com/forever/guides/darkmoon-faire);
+// NPC IDs from Wowhead's Forever data. Gelvas Grimegate redeems the tickets for rewards.
+const NPC = {
+  "Animal Parts": {id: 14829, name: "Yebb Neblegear"},
+  "Blacksmithing": {id: 14832, name: "Kerri Hicks"},
+  "Engineering": {id: 14841, name: "Rinling"},
+  "Leatherworking": {id: 14833, name: "Chronos"},
+};
+const TICKET_NPC = {id: 14828, name: "Gelvas Grimegate"};
+for (const it of ITEMS) { it.npc = NPC[it.category].name; it.npcId = NPC[it.category].id; }
 const WOWHEAD_ITEM_URL = id => `https://www.wowhead.com/forever/item=${id}`;
+const WOWHEAD_NPC_URL = id => `https://www.wowhead.com/forever/npc=${id}`;
 const WOWHEAD_QUEST_URL = id => `https://www.wowhead.com/forever/quest=${id}`;
 const ICON_URL = (icon, size = "medium") => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`;
 const TICKET_VALUE = [1,4,8,12,20];
@@ -163,7 +171,8 @@ function calculate(items, {tickets = 0, target = 50, rep = 0, strict = false, ca
     (a.total == null) - (b.total == null) || (a.total ?? 0) - (b.total ?? 0) || a.quests - b.quests || a.name.localeCompare(b.name));
 }
 
-const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, REP_CAP, MIN_LEVEL, MAX_LEVEL, GOALS, WOWHEAD_ITEM_URL, WOWHEAD_QUEST_URL, ICON_URL,
+const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, REP_CAP, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
+  WOWHEAD_ITEM_URL, WOWHEAD_QUEST_URL, WOWHEAD_NPC_URL, ICON_URL,
   parseAuctionator, realmPrices, applyPrices, calculate};
 if (typeof module !== "undefined") module.exports = DMF; else globalThis.DMF = DMF;
 })();
