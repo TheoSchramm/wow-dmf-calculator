@@ -25,28 +25,31 @@
     <section class="frame frame--dragon" aria-labelledby="loader-title">
       <span class="frame__dragon" aria-hidden="true"></span>
       <h2 class="frame__title" id="loader-title">1. Load your prices</h2>
-      <label class="checkbox"><input type="checkbox" id="ssf"><span>Self-found: no auction house, farm the items from mobs instead</span></label>
       <div id="prices">
         <p class="frame__note">Scan the auction house in game with the Auctionator addon, then type <code>/reload</code>. Then load its file here.</p>
         <div id="loader"></div>
+      </div>
+      <p class="frame__note" id="ssf-skip" hidden>Not needed in self-found mode: items come from mobs, not the auction house.</p>
+    </section>
+
+    <section class="frame" aria-labelledby="filters-title">
+      <h2 class="frame__title" id="filters-title">2. Configure your run</h2>
+      <div id="filters"></div>
+      <div class="options">
+        <label class="checkbox"><input type="checkbox" id="ssf"><span>Self-found: no auction house, farm the items from mobs instead</span></label>
         <div class="professions" id="professions" role="group" aria-labelledby="professions-label">
           <span class="field__label" id="professions-label">Professions you have</span>
           <div class="professions__list">
-            <label class="checkbox"><input type="checkbox" data-profession="Blacksmithing"><span>Blacksmithing</span></label>
-            <label class="checkbox"><input type="checkbox" data-profession="Engineering"><span>Engineering</span></label>
-            <label class="checkbox"><input type="checkbox" data-profession="Leatherworking"><span>Leatherworking</span></label>
+            <label class="checkbox"><input type="checkbox" data-profession="Blacksmithing"><img class="professions__icon" src="https://wow.zamimg.com/images/wow/icons/medium/trade_blacksmithing.jpg" alt="" width="24" height="24" onerror="this.remove()"><span>Blacksmithing</span></label>
+            <label class="checkbox"><input type="checkbox" data-profession="Engineering"><img class="professions__icon" src="https://wow.zamimg.com/images/wow/icons/medium/trade_engineering.jpg" alt="" width="24" height="24" onerror="this.remove()"><span>Engineering</span></label>
+            <label class="checkbox"><input type="checkbox" data-profession="Leatherworking"><img class="professions__icon" src="https://wow.zamimg.com/images/wow/icons/medium/trade_leatherworking.jpg" alt="" width="24" height="24" onerror="this.remove()"><span>Leatherworking</span></label>
           </div>
           <span class="field__hint">Craft those turn-ins from materials priced in your Auctionator file whenever that is cheaper than buying them.
             Every material needs a price, so scan them at the auction house too. Skill levels are not checked.</span>
         </div>
-      </div>
-      <p class="frame__note" id="ssf-note" hidden>Only the Animal Parts drop from mobs, so the route uses just those. The Blacksmithing, Engineering and Leatherworking turn-ins are crafted and are left out.
+        <p class="frame__note" id="ssf-note" hidden>Only the Animal Parts drop from mobs, so the route uses just those. The Blacksmithing, Engineering and Leatherworking turn-ins are crafted and are left out.
         Mobs are ranked by how often they drop each item (from Wowhead data), limited to normal open-world mobs you can fight at your level.</p>
-    </section>
-
-    <section class="frame" aria-labelledby="filters-title">
-      <h2 class="frame__title" id="filters-title">2. Choose your reward</h2>
-      <div id="filters"></div>
+      </div>
     </section>
 
     <section class="frame" aria-labelledby="results-title">

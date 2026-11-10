@@ -408,8 +408,11 @@ code {
   cursor: copy;
 }
 
-.professions { display: grid; gap: 2px; margin-top: 10px; }
+.options { display: grid; gap: 10px; margin-top: 16px; }
+.professions { display: grid; gap: 2px; }
+.professions[hidden] { display: none; }
 .professions__list { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.professions__icon { width: 24px; height: 24px; border: 1px solid #000; border-radius: 3px; }
 
 /* UI-CheckBox-Up / -Check / -Highlight */
 .checkbox {

@@ -10,7 +10,9 @@
   document.getElementById("professions").addEventListener("change", () => render());
   const ssfBox = document.getElementById("ssf");
   ssfBox.addEventListener("change", () => {
-    document.getElementById("prices").hidden = ssfBox.checked;
+    document.getElementById("prices").hidden = ssfBox.checked;       // step 1 is not needed without the auction house
+    document.getElementById("ssf-skip").hidden = !ssfBox.checked;
+    document.getElementById("professions").hidden = ssfBox.checked;   // crafting is priced from the auction house
     document.getElementById("ssf-note").hidden = !ssfBox.checked;
     render();
   });
