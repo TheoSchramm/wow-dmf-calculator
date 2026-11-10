@@ -271,6 +271,85 @@ code {
 .select:disabled { color: var(--disabled); cursor: not-allowed; }
 .select option { background: #17171f; color: var(--highlight); }
 
+/* Reward dropdown: options show the item icon and its quality colour.
+   Uses the customizable <select> (appearance: base-select) where supported; elsewhere it is a normal
+   select whose options are just coloured text. Quality is a data attribute, not a .qN class, because
+   Wowhead's tooltip script styles option.qN:checked with !important (white background). */
+.select--rich[data-quality="1"], .select--rich option[data-quality="1"] { color: var(--q1); }
+.select--rich[data-quality="2"], .select--rich option[data-quality="2"] { color: var(--q2); }
+.select--rich[data-quality="3"], .select--rich option[data-quality="3"] { color: var(--q3); }
+.select--rich[data-quality="4"], .select--rich option[data-quality="4"] { color: var(--q4); }
+
+@supports (appearance: base-select) {
+  .select--rich,
+  .select--rich::picker(select) { appearance: base-select; }
+
+  .select--rich {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 6px;
+  }
+  .select--rich > button {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  .select--rich selectedcontent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .select--rich::picker-icon { color: var(--normal); }
+
+  /* the open list: a GameTooltip-style box */
+  .select--rich::picker(select) {
+    margin-top: 2px;
+    padding: 6px;
+    max-height: 60vh;
+    background: #0c0c1c;          /* opaque, under the border too; the border image is drawn on top */
+    border: 16px solid transparent;
+    border-image: url("../assets/ui/tooltip-border.png") 16 / 16px round;
+    opacity: 1;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+  }
+  .select--rich option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    font: 14px var(--font);
+    text-shadow: 1px 1px 0 #000;
+    background: none;
+    cursor: pointer;
+  }
+  .select--rich option:hover,
+  .select--rich option:focus-visible {
+    background: url("../assets/ui/row-highlight.png") center / 100% 100% no-repeat;
+    outline: none;
+  }
+  .select--rich option:checked { background-color: rgba(255, 209, 0, 0.12); }
+  .select--rich option::checkmark { color: var(--normal); }
+
+  .opt-icon {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 1px #5b4a30;
+  }
+  .opt-cost { color: var(--muted); font-size: 13px; }
+}
+
 .input--path {
   font-family: var(--font-mono);
   font-size: 13px;

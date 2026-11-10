@@ -14,7 +14,15 @@
       <div class="filters">
         <label class="field filters__goal">
           <span class="field__label">Reward you want</span>
-          <select class="select" name="goal"></select>
+          <select class="select select--rich" name="goal">
+            <button type="button"><selectedcontent></selectedcontent></button>
+            ${goals.map(g => `
+            <option value="${UI.esc(g.key)}" data-quality="${g.quality}"${g.key === defaultGoal ? " selected" : ""}>
+              <img class="opt-icon" src="${UI.esc(DMF.ICON_URL(g.icon))}" alt="" onerror="this.remove()">
+              <span class="opt-name">${UI.esc(g.name)}</span>
+              <span class="opt-cost">(${g.tickets} tickets)</span>
+            </option>`).join("")}
+          </select>
         </label>
         <div class="reward" data-ref="reward" aria-live="polite"></div>
         <label class="field">
@@ -35,7 +43,9 @@
 
     const el = name => root.querySelector(`[name="${name}"]`);
     const goalByKey = Object.fromEntries(goals.map(g => [g.key, g]));
-    goals.forEach(g => el("goal").add(new Option(`${g.name} (${g.tickets} tickets)`, g.key, false, g.key === defaultGoal)));
+    // Colour the closed select like the chosen item (browsers without rich options still show this).
+    const colourGoal = () => { el("goal").dataset.quality = goalByKey[el("goal").value].quality; };
+    colourGoal();
 
     // Reward preview for the selected goal, like a quest reward box: icon, item link, redemption quest.
     function renderReward() {
@@ -54,7 +64,7 @@
 
     root.addEventListener("input", e => {
       if (!e.target.name) return;
-      if (e.target.name === "goal") renderReward();
+      if (e.target.name === "goal") { renderReward(); colourGoal(); }
       onChange(values(), e.target.name);
     });
     root.addEventListener("change", e => e.target.name === "realm" && onChange(values(), "realm"));
