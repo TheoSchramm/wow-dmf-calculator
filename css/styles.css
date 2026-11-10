@@ -529,13 +529,25 @@ code {
 
 /* ---------- Filters ---------- */
 
+/* Two columns: inputs on the left, the reward showcase on the right (one column on phones). */
 .filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 18px 28px;
   align-items: start;
 }
-.filters__goal { grid-column: 1 / -1; max-width: 520px; }
+.filters__inputs { display: grid; gap: 16px; min-width: 0; }
+.filters__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 720px) {
+  .filters { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .filters__row { grid-template-columns: minmax(0, 1fr); }
+}
 .field[hidden] { display: none; }
 .field__hint {
   font-size: 12px;
@@ -551,20 +563,34 @@ code {
 }
 .summary strong { font-weight: normal; color: var(--normal); }
 
-/* Selected goal's reward, laid out like a quest reward entry */
-.reward {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 12px;
-}
-.reward__label {
-  color: var(--normal);
+/* Reward showcase, like the in-game quest reward panel: big icon, name, cost, quest, NPC */
+.reward-card { display: grid; gap: 10px; padding: 14px 16px 16px; }
+.reward-card__label {
   font-size: 13px;
+  color: var(--normal);
   text-shadow: var(--shadow);
 }
-.reward .item { flex: 1 1 320px; max-width: 520px; }
+.reward-card__body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-left: 10px;           /* room for the slot frame around the big icon */
+}
+.reward-card__text { display: grid; gap: 4px; min-width: 0; }
+.reward-card__name { font-size: 18px; line-height: 1.2; }
+.reward-card__cost { font-size: 14px; color: var(--body); }
+.reward-card__quest,
+.reward-card__npc { font-size: 13px; color: var(--muted); }
+
+/* big version of the item icon in its slot frame */
+.item__icon.item__icon--large {
+  width: 56px;
+  height: 56px;
+  margin: 10px;
+  font-size: 24px;
+  line-height: 56px;
+}
+.item__icon.item__icon--large::after { inset: -20px; }
 
 /* ---------- Results (auction house browse list) ---------- */
 

@@ -12,25 +12,29 @@
   UI.filters = function filters(root, {goals, defaultGoal, maxLevel, onChange}) {
     root.innerHTML = `
       <div class="filters">
-        <div class="field filters__goal">
-          <span class="field__label" id="goal-label">Reward you want</span>
-          <div data-ref="goal"></div>
+        <div class="filters__inputs">
+          <div class="field">
+            <span class="field__label" id="goal-label">Reward you want</span>
+            <div data-ref="goal"></div>
+          </div>
+          <div class="filters__row">
+            <label class="field">
+              <span class="field__label">Your character level</span>
+              <input class="input" name="level" type="number" min="1" max="${maxLevel}" value="${maxLevel}" inputmode="numeric">
+              <span class="field__hint">Hides turn-ins you are too low level for.</span>
+            </label>
+            <label class="field">
+              <span class="field__label">Prize tickets you already have</span>
+              <input class="input" name="tickets" type="number" min="0" value="0" inputmode="numeric">
+              <span class="field__hint">Leave at 0 if you have none.</span>
+            </label>
+          </div>
+          <label class="field" data-ref="realm-field" hidden>
+            <span class="field__label">Use prices from realm</span>
+            <select class="select" name="realm"></select>
+          </label>
         </div>
-        <div class="reward" data-ref="reward" aria-live="polite"></div>
-        <label class="field">
-          <span class="field__label">Your character level</span>
-          <input class="input" name="level" type="number" min="1" max="${maxLevel}" value="${maxLevel}" inputmode="numeric">
-          <span class="field__hint">Hides turn-ins you are too low level for.</span>
-        </label>
-        <label class="field">
-          <span class="field__label">Prize tickets you already have</span>
-          <input class="input" name="tickets" type="number" min="0" value="0" inputmode="numeric">
-          <span class="field__hint">Leave at 0 if you have none.</span>
-        </label>
-        <label class="field" data-ref="realm-field" hidden>
-          <span class="field__label">Use prices from realm</span>
-          <select class="select" name="realm"></select>
-        </label>
+        <aside class="reward-card tooltip" data-ref="reward" aria-live="polite" aria-label="Selected reward"></aside>
       </div>`;
 
     const el = name => root.querySelector(`[name="${name}"]`);
@@ -42,18 +46,21 @@
       onChange() { renderReward(); onChange(values(), "goal"); },
     });
 
-    // Reward preview for the selected goal, like a quest reward box: icon, item link, redemption quest.
+    // Reward showcase for the selected goal, like the in-game quest reward panel.
     function renderReward() {
       const g = goalByKey[goalPicker.value()];
+      const w = UI.wowhead;
       root.querySelector('[data-ref="reward"]').innerHTML = `
-        <span class="reward__label">You will receive:</span>
-        <div class="item">
-          ${UI.wowhead.itemIcon(g)}
-          <span class="item__name">
-            <span>${UI.wowhead.itemLink(g)}</span>
-            <span class="item__meta">Costs ${UI.wowhead.tickets(g.tickets)} &middot; Quest: ${UI.wowhead.questLink({id: g.questId, name: `${g.tickets} Tickets - ${g.name}`})}</span>
-          </span>
-        </div>`;
+        <span class="reward-card__label">You will receive:</span>
+        <div class="reward-card__body">
+          ${w.itemIcon(g, {size: "large"})}
+          <div class="reward-card__text">
+            ${w.itemLink(g, "reward-card__name")}
+            <span class="reward-card__cost">Costs ${w.tickets(g.tickets)}</span>
+          </div>
+        </div>
+        <div class="reward-card__quest">${w.questLink({id: g.questId, name: `${g.tickets} Tickets - ${g.name}`})}</div>
+        <div class="reward-card__npc">Redeem with ${w.npcLink(DMF.TICKET_NPC)} at the Darkmoon Faire.</div>`;
     }
     renderReward();
 

@@ -9,11 +9,12 @@
 
   UI.wowhead = {
     // Icon in a UI-Quickslot2 frame; the first letter shows if the icon can't load (e.g. offline).
-    itemIcon(item, {count = "", category = ""} = {}) {
-      return `<a class="item__icon" href="${esc(DMF.WOWHEAD_ITEM_URL(item.id))}" target="_blank" rel="noopener"
+    // size "large" uses Wowhead's 56px icon in a bigger slot frame (reward showcase).
+    itemIcon(item, {count = "", category = "", size = "medium"} = {}) {
+      return `<a class="item__icon${size === "large" ? " item__icon--large" : ""}" href="${esc(DMF.WOWHEAD_ITEM_URL(item.id))}" target="_blank" rel="noopener"
           data-category="${esc(category)}" tabindex="-1" aria-hidden="true">
           ${esc(item.name[0])}
-          <img src="${esc(DMF.ICON_URL(item.icon))}" alt="" loading="lazy" onerror="this.remove()">
+          <img src="${esc(DMF.ICON_URL(item.icon, size))}" alt="" loading="lazy" onerror="this.remove()">
           ${count !== "" ? `<span class="item__count">${esc(count)}</span>` : ""}
         </a>`;
     },
