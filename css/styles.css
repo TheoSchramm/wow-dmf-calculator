@@ -767,6 +767,9 @@ code {
 .npc-link { color: var(--normal); text-decoration: underline dotted; text-underline-offset: 3px; }
 .npc-link:hover, .npc-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
 
+.zone-link { color: var(--muted); text-decoration: underline dotted; text-underline-offset: 3px; }
+.zone-link:hover, .zone-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
+
 /* quest links in the quest log's yellow */
 .quest-link { color: var(--normal); text-decoration: underline dotted; text-underline-offset: 3px; }
 .quest-link:hover, .quest-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }

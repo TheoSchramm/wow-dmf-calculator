@@ -41,6 +41,9 @@
     npcLink(npc) {
       return `<a class="npc-link" href="${esc(DMF.WOWHEAD_NPC_URL(npc.id))}" target="_blank" rel="noopener">${esc(npc.name)}</a>`;
     },
+    zoneLink(zone) {
+      return `<a class="zone-link" href="${esc(DMF.WOWHEAD_ZONE_URL(zone.id))}" target="_blank" rel="noopener">${esc(zone.name)}</a>`;
+    },
     questLink(quest) {
       return `<a class="quest-link" href="${esc(DMF.WOWHEAD_QUEST_URL(quest.id))}" target="_blank" rel="noopener"><span class="quest-link__icon" aria-hidden="true"></span>${esc(quest.name)}</a>`;
     },

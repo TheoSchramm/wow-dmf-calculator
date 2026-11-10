@@ -25,8 +25,13 @@
     <section class="frame frame--dragon" aria-labelledby="loader-title">
       <span class="frame__dragon" aria-hidden="true"></span>
       <h2 class="frame__title" id="loader-title">1. Load your prices</h2>
-      <p class="frame__note">Scan the auction house in game with the Auctionator addon, then type <code>/reload</code>. Then load its file here.</p>
-      <div id="loader"></div>
+      <label class="checkbox"><input type="checkbox" id="ssf"><span>Self-found: no auction house, farm the items from mobs instead</span></label>
+      <div id="prices">
+        <p class="frame__note">Scan the auction house in game with the Auctionator addon, then type <code>/reload</code>. Then load its file here.</p>
+        <div id="loader"></div>
+      </div>
+      <p class="frame__note" id="ssf-note" hidden>Only the Animal Parts drop from mobs, so the route uses just those. The Blacksmithing, Engineering and Leatherworking turn-ins are crafted and are left out.
+        Mobs are ranked by how often they drop each item (from Wowhead data), limited to normal open-world mobs you can fight at your level.</p>
     </section>
 
     <section class="frame" aria-labelledby="filters-title">
@@ -35,7 +40,7 @@
     </section>
 
     <section class="frame" aria-labelledby="results-title">
-      <h2 class="frame__title" id="results-title">3. Buy and turn in</h2>
+      <h2 class="frame__title" id="results-title">3. Get the items and turn in</h2>
       <p class="frame__note">Follow the steps in order: each turn-in raises your <a class="faction-link" href="https://www.wowhead.com/forever/faction=909/darkmoon-faire" target="_blank" rel="noopener">Darkmoon Faire</a> reputation, and the cheaper quests close as it rises. Every turn-in is listed below for reference.</p>
       <div id="results"></div>
     </section>

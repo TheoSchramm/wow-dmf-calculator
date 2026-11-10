@@ -1,0 +1,1154 @@
+{
+ "4582": {
+  "name": "Soft Bushy Tail",
+  "drops": [
+   {
+    "npcId": 4660,
+    "name": "Maraudine Bonepaw",
+    "level": "37 - 38",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 779,
+    "total": 1744,
+    "chance": 44.67
+   },
+   {
+    "npcId": 259263,
+    "name": "Coyote Prowler",
+    "level": "36 - 37",
+    "classification": "",
+    "zoneId": 16591,
+    "zone": "Riverglades",
+    "looted": 5,
+    "total": 12,
+    "chance": 41.67
+   },
+   {
+    "npcId": 257017,
+    "name": "Twilight Worg",
+    "level": "37 - 38",
+    "classification": "",
+    "zoneId": 16591,
+    "zone": "Riverglades",
+    "looted": 19,
+    "total": 52,
+    "chance": 36.54
+   },
+   {
+    "npcId": 268831,
+    "name": "Plains Prowler",
+    "level": "39 - 40",
+    "classification": "",
+    "zoneId": 16591,
+    "zone": "Riverglades",
+    "looted": 12,
+    "total": 41,
+    "chance": 29.27
+   },
+   {
+    "npcId": 2729,
+    "name": "Elder Crag Coyote",
+    "level": "39 - 40",
+    "classification": "",
+    "zoneId": 3,
+    "zone": "Badlands",
+    "looted": 31222,
+    "total": 130705,
+    "chance": 23.89
+   },
+   {
+    "npcId": 4662,
+    "name": "Magram Bonepaw",
+    "level": "37 - 38",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 1337,
+    "total": 5500,
+    "chance": 24.31
+   },
+   {
+    "npcId": 2728,
+    "name": "Feral Crag Coyote",
+    "level": "37 - 38",
+    "classification": "",
+    "zoneId": 3,
+    "zone": "Badlands",
+    "looted": 9917,
+    "total": 44997,
+    "chance": 22.04
+   },
+   {
+    "npcId": 4690,
+    "name": "Rabid Bonepaw",
+    "level": "36 - 38",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 366,
+    "total": 1699,
+    "chance": 21.54
+   },
+   {
+    "npcId": 4681,
+    "name": "Mage Hunter",
+    "level": "38 - 39",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 2794,
+    "total": 13336,
+    "chance": 20.95
+   },
+   {
+    "npcId": 4685,
+    "name": "Ley Hunter",
+    "level": "39 - 40",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 1524,
+    "total": 7678,
+    "chance": 19.85
+   },
+   {
+    "npcId": 259267,
+    "name": "Plains Coyote",
+    "level": "36 - 37",
+    "classification": "",
+    "zoneId": 16591,
+    "zone": "Riverglades",
+    "looted": 34,
+    "total": 171,
+    "chance": 19.88
+   },
+   {
+    "npcId": 2727,
+    "name": "Crag Coyote",
+    "level": "35 - 36",
+    "classification": "",
+    "zoneId": 3,
+    "zone": "Badlands",
+    "looted": 9759,
+    "total": 51374,
+    "chance": 19
+   },
+   {
+    "npcId": 4678,
+    "name": "Mana Eater",
+    "level": "37 - 38",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 477,
+    "total": 2469,
+    "chance": 19.32
+   },
+   {
+    "npcId": 258522,
+    "name": "Sootfur",
+    "level": "38",
+    "classification": "",
+    "zoneId": 16591,
+    "zone": "Riverglades",
+    "looted": 4,
+    "total": 23,
+    "chance": 17.39
+   },
+   {
+    "npcId": 4689,
+    "name": "Starving Bonepaw",
+    "level": "30 - 32",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 555,
+    "total": 4742,
+    "chance": 11.7
+   },
+   {
+    "npcId": 4688,
+    "name": "Bonepaw Hyena",
+    "level": "33 - 35",
+    "classification": "",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 271,
+    "total": 2328,
+    "chance": 11.64
+   },
+   {
+    "npcId": 4304,
+    "name": "Scarlet Tracking Hound",
+    "level": "33 - 34",
+    "classification": "Elite",
+    "zoneId": 796,
+    "zone": "Scarlet Monastery",
+    "looted": 5817,
+    "total": 55352,
+    "chance": 10.51
+   },
+   {
+    "npcId": 14228,
+    "name": "Giggler",
+    "level": "34",
+    "classification": "Rare",
+    "zoneId": 405,
+    "zone": "Desolace",
+    "looted": 21,
+    "total": 236,
+    "chance": 8.9
+   }
+  ]
+ },
+ "5117": {
+  "name": "Vibrant Plume",
+  "drops": [
+   {
+    "npcId": 7376,
+    "name": "Sky Shadow",
+    "level": "55 - 56",
+    "classification": "",
+    "zoneId": 41,
+    "zone": "Deadwind Pass",
+    "looted": 3239,
+    "total": 10721,
+    "chance": 30.21
+   },
+   {
+    "npcId": 1809,
+    "name": "Carrion Vulture",
+    "level": "50 - 52",
+    "classification": "",
+    "zoneId": 85,
+    "zone": "Tirisfal Glades",
+    "looted": 499,
+    "total": 1679,
+    "chance": 29.72
+   },
+   {
+    "npcId": 2931,
+    "name": "Zaricotl",
+    "level": "55 - 56",
+    "classification": "Rare Elite",
+    "zoneId": 3,
+    "zone": "Badlands",
+    "looted": 305,
+    "total": 1021,
+    "chance": 29.87
+   },
+   {
+    "npcId": 5362,
+    "name": "Northspring Harpy",
+    "level": "48 - 49",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 3936,
+    "total": 13462,
+    "chance": 29.24
+   },
+   {
+    "npcId": 5363,
+    "name": "Northspring Roguefeather",
+    "level": "48 - 49",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 3893,
+    "total": 13423,
+    "chance": 29
+   },
+   {
+    "npcId": 5364,
+    "name": "Northspring Slayer",
+    "level": "49 - 50",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 5189,
+    "total": 18300,
+    "chance": 28.36
+   },
+   {
+    "npcId": 5366,
+    "name": "Northspring Windcaller",
+    "level": "49 - 50",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 5099,
+    "total": 18244,
+    "chance": 27.95
+   },
+   {
+    "npcId": 8299,
+    "name": "Spiteflayer",
+    "level": "52",
+    "classification": "Rare",
+    "zoneId": 4,
+    "zone": "Blasted Lands",
+    "looted": 108,
+    "total": 380,
+    "chance": 28.42
+   },
+   {
+    "npcId": 5930,
+    "name": "Sister Riven",
+    "level": "28",
+    "classification": "Rare Elite",
+    "zoneId": 406,
+    "zone": "Stonetalon Mountains",
+    "looted": 141,
+    "total": 560,
+    "chance": 25.18
+   },
+   {
+    "npcId": 12579,
+    "name": "Bloodfury Ripper",
+    "level": "26",
+    "classification": "Elite",
+    "zoneId": 406,
+    "zone": "Stonetalon Mountains",
+    "looted": 1089,
+    "total": 4592,
+    "chance": 23.72
+   },
+   {
+    "npcId": 7456,
+    "name": "Winterspring Screecher",
+    "level": "57 - 60",
+    "classification": "",
+    "zoneId": 618,
+    "zone": "Winterspring",
+    "looted": 846,
+    "total": 3507,
+    "chance": 24.12
+   },
+   {
+    "npcId": 4104,
+    "name": "Screeching Windcaller",
+    "level": "30",
+    "classification": "",
+    "zoneId": 400,
+    "zone": "Thousand Needles",
+    "looted": 4849,
+    "total": 21039,
+    "chance": 23.05
+   },
+   {
+    "npcId": 7455,
+    "name": "Winterspring Owl",
+    "level": "54 - 56",
+    "classification": "",
+    "zoneId": 618,
+    "zone": "Winterspring",
+    "looted": 1204,
+    "total": 5340,
+    "chance": 22.55
+   },
+   {
+    "npcId": 7098,
+    "name": "Ironbeak Screecher",
+    "level": "52 - 53",
+    "classification": "",
+    "zoneId": 361,
+    "zone": "Felwood",
+    "looted": 592,
+    "total": 2565,
+    "chance": 23.08
+   },
+   {
+    "npcId": 14283,
+    "name": "Stormpike Owl",
+    "level": "53 - 54",
+    "classification": "",
+    "zoneId": 2597,
+    "zone": "Alterac Valley",
+    "looted": 1307,
+    "total": 6305,
+    "chance": 20.73
+   },
+   {
+    "npcId": 4101,
+    "name": "Screeching Roguefeather",
+    "level": "29 - 30",
+    "classification": "",
+    "zoneId": 400,
+    "zone": "Thousand Needles",
+    "looted": 6290,
+    "total": 35415,
+    "chance": 17.76
+   },
+   {
+    "npcId": 4100,
+    "name": "Screeching Harpy",
+    "level": "28 - 29",
+    "classification": "",
+    "zoneId": 400,
+    "zone": "Thousand Needles",
+    "looted": 6134,
+    "total": 33662,
+    "chance": 18.22
+   },
+   {
+    "npcId": 5347,
+    "name": "Antilus the Soarer",
+    "level": "48",
+    "classification": "Rare",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 23,
+    "total": 144,
+    "chance": 15.97
+   },
+   {
+    "npcId": 14343,
+    "name": "Olm the Wise",
+    "level": "52",
+    "classification": "Rare",
+    "zoneId": 361,
+    "zone": "Felwood",
+    "looted": 19,
+    "total": 128,
+    "chance": 14.84
+   },
+   {
+    "npcId": 4490,
+    "name": "Grenka Bloodscreech",
+    "level": "31",
+    "classification": "",
+    "zoneId": 400,
+    "zone": "Thousand Needles",
+    "looted": 400,
+    "total": 3053,
+    "chance": 13.1
+   },
+   {
+    "npcId": 7808,
+    "name": "Marauding Owlbeast",
+    "level": "46",
+    "classification": "",
+    "zoneId": 47,
+    "zone": "The Hinterlands",
+    "looted": 431,
+    "total": 3559,
+    "chance": 12.11
+   },
+   {
+    "npcId": 8075,
+    "name": "Edana Hatetalon",
+    "level": "50",
+    "classification": "Elite",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 261,
+    "total": 2118,
+    "chance": 12.32
+   },
+   {
+    "npcId": 5305,
+    "name": "Frayfeather Skystormer",
+    "level": "45 - 46",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 5698,
+    "total": 52721,
+    "chance": 10.81
+   },
+   {
+    "npcId": 2929,
+    "name": "Savage Owlbeast",
+    "level": "46 - 47",
+    "classification": "",
+    "zoneId": 47,
+    "zone": "The Hinterlands",
+    "looted": 4175,
+    "total": 36597,
+    "chance": 11.41
+   },
+   {
+    "npcId": 5300,
+    "name": "Frayfeather Hippogryph",
+    "level": "43 - 44",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 5004,
+    "total": 47669,
+    "chance": 10.5
+   },
+   {
+    "npcId": 5306,
+    "name": "Frayfeather Patriarch",
+    "level": "46 - 47",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 1841,
+    "total": 17892,
+    "chance": 10.29
+   },
+   {
+    "npcId": 6380,
+    "name": "Thunderhead Consort",
+    "level": "52 - 61",
+    "classification": "",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 630,
+    "total": 6390,
+    "chance": 9.86
+   },
+   {
+    "npcId": 6379,
+    "name": "Thunderhead Patriarch",
+    "level": "52 - 61",
+    "classification": "",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 439,
+    "total": 4654,
+    "chance": 9.43
+   },
+   {
+    "npcId": 5304,
+    "name": "Frayfeather Stagwing",
+    "level": "44 - 45",
+    "classification": "",
+    "zoneId": 357,
+    "zone": "Feralas",
+    "looted": 4300,
+    "total": 55105,
+    "chance": 7.8
+   },
+   {
+    "npcId": 2928,
+    "name": "Primitive Owlbeast",
+    "level": "44 - 45",
+    "classification": "",
+    "zoneId": 47,
+    "zone": "The Hinterlands",
+    "looted": 2446,
+    "total": 32062,
+    "chance": 7.63
+   },
+   {
+    "npcId": 2927,
+    "name": "Vicious Owlbeast",
+    "level": "42 - 43",
+    "classification": "",
+    "zoneId": 47,
+    "zone": "The Hinterlands",
+    "looted": 1517,
+    "total": 19444,
+    "chance": 7.8
+   },
+   {
+    "npcId": 5430,
+    "name": "Searing Roc",
+    "level": "47 - 49",
+    "classification": "",
+    "zoneId": 440,
+    "zone": "Tanaris",
+    "looted": 385,
+    "total": 4887,
+    "chance": 7.88
+   },
+   {
+    "npcId": 7099,
+    "name": "Ironbeak Hunter",
+    "level": "50 - 51",
+    "classification": "",
+    "zoneId": 361,
+    "zone": "Felwood",
+    "looted": 261,
+    "total": 3465,
+    "chance": 7.53
+   },
+   {
+    "npcId": 7097,
+    "name": "Ironbeak Owl",
+    "level": "48 - 49",
+    "classification": "",
+    "zoneId": 361,
+    "zone": "Felwood",
+    "looted": 227,
+    "total": 3185,
+    "chance": 7.13
+   },
+   {
+    "npcId": 6375,
+    "name": "Thunderhead Hippogryph",
+    "level": "46 - 48",
+    "classification": "",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 505,
+    "total": 8181,
+    "chance": 6.17
+   },
+   {
+    "npcId": 6378,
+    "name": "Thunderhead Skystormer",
+    "level": "50 - 52",
+    "classification": "",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 448,
+    "total": 8135,
+    "chance": 5.51
+   },
+   {
+    "npcId": 5982,
+    "name": "Black Slayer",
+    "level": "46 - 48",
+    "classification": "",
+    "zoneId": 4,
+    "zone": "Blasted Lands",
+    "looted": 7910,
+    "total": 170791,
+    "chance": 4.63
+   },
+   {
+    "npcId": 5429,
+    "name": "Fire Roc",
+    "level": "43 - 45",
+    "classification": "",
+    "zoneId": 440,
+    "zone": "Tanaris",
+    "looted": 1594,
+    "total": 33096,
+    "chance": 4.82
+   },
+   {
+    "npcId": 5428,
+    "name": "Roc",
+    "level": "41 - 43",
+    "classification": "",
+    "zoneId": 440,
+    "zone": "Tanaris",
+    "looted": 859,
+    "total": 16317,
+    "chance": 5.26
+   },
+   {
+    "npcId": 6377,
+    "name": "Thunderhead Stagwing",
+    "level": "48 - 50",
+    "classification": "",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 436,
+    "total": 7980,
+    "chance": 5.46
+   },
+   {
+    "npcId": 8207,
+    "name": "Greater Firebird",
+    "level": "46",
+    "classification": "Rare",
+    "zoneId": 440,
+    "zone": "Tanaris",
+    "looted": 5,
+    "total": 123,
+    "chance": 4.07
+   },
+   {
+    "npcId": 6648,
+    "name": "Antilos",
+    "level": "50",
+    "classification": "Rare",
+    "zoneId": 16,
+    "zone": "Azshara",
+    "looted": 7,
+    "total": 220,
+    "chance": 3.18
+   },
+   {
+    "npcId": 8210,
+    "name": "Razortalon",
+    "level": "44",
+    "classification": "Rare",
+    "zoneId": 47,
+    "zone": "The Hinterlands",
+    "looted": 3,
+    "total": 130,
+    "chance": 2.31
+   }
+  ]
+ },
+ "5134": {
+  "name": "Small Furry Paw",
+  "drops": [
+   {
+    "npcId": 2069,
+    "name": "Moonstalker",
+    "level": "14 - 15",
+    "classification": "",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 24693,
+    "total": 74881,
+    "chance": 32.98
+   },
+   {
+    "npcId": 3241,
+    "name": "Savannah Patriarch",
+    "level": "15 - 16",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 4002,
+    "total": 12328,
+    "chance": 32.46
+   },
+   {
+    "npcId": 2175,
+    "name": "Shadowclaw",
+    "level": "13",
+    "classification": "Rare",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 184,
+    "total": 732,
+    "chance": 25.14
+   },
+   {
+    "npcId": 3415,
+    "name": "Savannah Huntress",
+    "level": "11 - 12",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 13727,
+    "total": 61348,
+    "chance": 22.38
+   },
+   {
+    "npcId": 2070,
+    "name": "Moonstalker Runt",
+    "level": "10 - 17",
+    "classification": "",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 7652,
+    "total": 35206,
+    "chance": 21.73
+   },
+   {
+    "npcId": 3425,
+    "name": "Savannah Prowler",
+    "level": "14 - 15",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 25404,
+    "total": 120085,
+    "chance": 21.16
+   },
+   {
+    "npcId": 3243,
+    "name": "Savannah Highmane",
+    "level": "12 - 13",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 980,
+    "total": 4575,
+    "chance": 21.42
+   },
+   {
+    "npcId": 5865,
+    "name": "Dishu",
+    "level": "13",
+    "classification": "Rare",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 104,
+    "total": 614,
+    "chance": 16.94
+   },
+   {
+    "npcId": 2071,
+    "name": "Moonstalker Matriarch",
+    "level": "19 - 20",
+    "classification": "",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 1855,
+    "total": 15858,
+    "chance": 11.7
+   },
+   {
+    "npcId": 3416,
+    "name": "Savannah Matriarch",
+    "level": "17 - 18",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 749,
+    "total": 7619,
+    "chance": 9.83
+   },
+   {
+    "npcId": 2237,
+    "name": "Moonstalker Sire",
+    "level": "17 - 18",
+    "classification": "",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 3599,
+    "total": 39541,
+    "chance": 9.1
+   },
+   {
+    "npcId": 3475,
+    "name": "Echeyakee",
+    "level": "16 - 60",
+    "classification": "",
+    "zoneId": 17,
+    "zone": "The Barrens",
+    "looted": 490,
+    "total": 8414,
+    "chance": 5.82
+   },
+   {
+    "npcId": 3619,
+    "name": "Ghost Saber",
+    "level": "19 - 20",
+    "classification": "",
+    "zoneId": 148,
+    "zone": "Darkshore",
+    "looted": 22,
+    "total": 480,
+    "chance": 4.58
+   }
+  ]
+ },
+ "11404": {
+  "name": "Evil Bat Eye",
+  "drops": [
+   {
+    "npcId": 11368,
+    "name": "Bloodseeker Bat",
+    "level": "59 - 60",
+    "classification": "",
+    "zoneId": 1977,
+    "zone": "Zul'Gurub",
+    "looted": 7612,
+    "total": 35577,
+    "chance": 21.4
+   },
+   {
+    "npcId": 8602,
+    "name": "Monstrous Plaguebat",
+    "level": "56 - 58",
+    "classification": "",
+    "zoneId": 139,
+    "zone": "Eastern Plaguelands",
+    "looted": 10516,
+    "total": 51849,
+    "chance": 20.28
+   },
+   {
+    "npcId": 8600,
+    "name": "Plaguebat",
+    "level": "53 - 55",
+    "classification": "",
+    "zoneId": 139,
+    "zone": "Eastern Plaguelands",
+    "looted": 26375,
+    "total": 147150,
+    "chance": 17.92
+   },
+   {
+    "npcId": 8601,
+    "name": "Noxious Plaguebat",
+    "level": "54 - 56",
+    "classification": "",
+    "zoneId": 139,
+    "zone": "Eastern Plaguelands",
+    "looted": 12191,
+    "total": 66625,
+    "chance": 18.3
+   },
+   {
+    "npcId": 11897,
+    "name": "Duskwing",
+    "level": "60",
+    "classification": "Elite",
+    "zoneId": 139,
+    "zone": "Eastern Plaguelands",
+    "looted": 246,
+    "total": 1733,
+    "chance": 14.2
+   },
+   {
+    "npcId": 8927,
+    "name": "Dark Screecher",
+    "level": "50 - 52",
+    "classification": "",
+    "zoneId": 1584,
+    "zone": "Blackrock Depths",
+    "looted": 6428,
+    "total": 49111,
+    "chance": 13.09
+   },
+   {
+    "npcId": 14750,
+    "name": "Gurubashi Bat Rider",
+    "level": "60 - 61",
+    "classification": "Elite",
+    "zoneId": 1977,
+    "zone": "Zul'Gurub",
+    "looted": 1302,
+    "total": 30760,
+    "chance": 4.23
+   }
+  ]
+ },
+ "11407": {
+  "name": "Torn Bear Pelt",
+  "drops": [
+   {
+    "npcId": 3811,
+    "name": "Giant Ashenvale Bear",
+    "level": "29 - 30",
+    "classification": "",
+    "zoneId": 331,
+    "zone": "Ashenvale",
+    "looted": 789,
+    "total": 3121,
+    "chance": 25.28
+   },
+   {
+    "npcId": 12037,
+    "name": "Ursol'lok",
+    "level": "31",
+    "classification": "Rare",
+    "zoneId": 331,
+    "zone": "Ashenvale",
+    "looted": 31,
+    "total": 140,
+    "chance": 22.14
+   },
+   {
+    "npcId": 271334,
+    "name": "Maddened Rotclaw",
+    "level": "25 - 26",
+    "classification": "",
+    "zoneId": 11,
+    "zone": "Wetlands",
+    "looted": 176,
+    "total": 890,
+    "chance": 19.78
+   },
+   {
+    "npcId": 3810,
+    "name": "Elder Ashenvale Bear",
+    "level": "25 - 26",
+    "classification": "",
+    "zoneId": 331,
+    "zone": "Ashenvale",
+    "looted": 2603,
+    "total": 15666,
+    "chance": 16.62
+   },
+   {
+    "npcId": 2356,
+    "name": "Elder Gray Bear",
+    "level": "25 - 26",
+    "classification": "",
+    "zoneId": 267,
+    "zone": "Hillsbrad Foothills",
+    "looted": 9103,
+    "total": 58205,
+    "chance": 15.64
+   },
+   {
+    "npcId": 14280,
+    "name": "Big Samras",
+    "level": "27",
+    "classification": "Rare",
+    "zoneId": 267,
+    "zone": "Hillsbrad Foothills",
+    "looted": 32,
+    "total": 231,
+    "chance": 13.85
+   },
+   {
+    "npcId": 12678,
+    "name": "Ursangous",
+    "level": "25",
+    "classification": "",
+    "zoneId": 331,
+    "zone": "Ashenvale",
+    "looted": 498,
+    "total": 3801,
+    "chance": 13.1
+   },
+   {
+    "npcId": 2354,
+    "name": "Vicious Gray Bear",
+    "level": "22 - 23",
+    "classification": "",
+    "zoneId": 267,
+    "zone": "Hillsbrad Foothills",
+    "looted": 7792,
+    "total": 95795,
+    "chance": 8.13
+   },
+   {
+    "npcId": 2351,
+    "name": "Gray Bear",
+    "level": "21 - 22",
+    "classification": "",
+    "zoneId": 267,
+    "zone": "Hillsbrad Foothills",
+    "looted": 6177,
+    "total": 76395,
+    "chance": 8.09
+   },
+   {
+    "npcId": 3809,
+    "name": "Ashenvale Bear",
+    "level": "21 - 22",
+    "classification": "",
+    "zoneId": 331,
+    "zone": "Ashenvale",
+    "looted": 3793,
+    "total": 45712,
+    "chance": 8.3
+   }
+  ]
+ },
+ "19933": {
+  "name": "Glowing Scorpid Blood",
+  "drops": [
+   {
+    "npcId": 14476,
+    "name": "Krellack",
+    "level": "56",
+    "classification": "Rare",
+    "zoneId": 1377,
+    "zone": "Silithus",
+    "looted": 71,
+    "total": 285,
+    "chance": 24.91
+   },
+   {
+    "npcId": 9698,
+    "name": "Firetail Scorpid",
+    "level": "56 - 57",
+    "classification": "",
+    "zoneId": 46,
+    "zone": "Burning Steppes",
+    "looted": 921,
+    "total": 3820,
+    "chance": 24.11
+   },
+   {
+    "npcId": 11737,
+    "name": "Stonelash Flayer",
+    "level": "57 - 58",
+    "classification": "",
+    "zoneId": 1377,
+    "zone": "Silithus",
+    "looted": 9662,
+    "total": 42419,
+    "chance": 22.78
+   },
+   {
+    "npcId": 11736,
+    "name": "Stonelash Pincer",
+    "level": "56",
+    "classification": "",
+    "zoneId": 1377,
+    "zone": "Silithus",
+    "looted": 12056,
+    "total": 54346,
+    "chance": 22.18
+   },
+   {
+    "npcId": 9701,
+    "name": "Spire Scorpid",
+    "level": "58",
+    "classification": "",
+    "zoneId": 1583,
+    "zone": "Blackrock Spire",
+    "looted": 6053,
+    "total": 41678,
+    "chance": 14.52
+   },
+   {
+    "npcId": 9695,
+    "name": "Deathlash Scorpid",
+    "level": "54 - 55",
+    "classification": "",
+    "zoneId": 46,
+    "zone": "Burning Steppes",
+    "looted": 1044,
+    "total": 7029,
+    "chance": 14.85
+   },
+   {
+    "npcId": 11735,
+    "name": "Stonelash Scorpid",
+    "level": "54 - 55",
+    "classification": "",
+    "zoneId": 1377,
+    "zone": "Silithus",
+    "looted": 12391,
+    "total": 88389,
+    "chance": 14.02
+   },
+   {
+    "npcId": 8301,
+    "name": "Clack the Reaver",
+    "level": "53",
+    "classification": "Rare",
+    "zoneId": 4,
+    "zone": "Blasted Lands",
+    "looted": 46,
+    "total": 335,
+    "chance": 13.73
+   },
+   {
+    "npcId": 5988,
+    "name": "Scorpok Stinger",
+    "level": "49 - 51",
+    "classification": "",
+    "zoneId": 4,
+    "zone": "Blasted Lands",
+    "looted": 9401,
+    "total": 125183,
+    "chance": 7.51
+   },
+   {
+    "npcId": 9691,
+    "name": "Venomtip Scorpid",
+    "level": "52 - 53",
+    "classification": "",
+    "zoneId": 46,
+    "zone": "Burning Steppes",
+    "looted": 1761,
+    "total": 21898,
+    "chance": 8.04
+   },
+   {
+    "npcId": 8926,
+    "name": "Deep Stinger",
+    "level": "50 - 52",
+    "classification": "",
+    "zoneId": 1584,
+    "zone": "Blackrock Depths",
+    "looted": 1608,
+    "total": 22121,
+    "chance": 7.27
+   }
+  ]
+ }
+}

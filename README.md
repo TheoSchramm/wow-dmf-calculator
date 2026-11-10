@@ -53,7 +53,22 @@ tonk, box, mutton, amulet, orb; default 50), `--rep` (Darkmoon Faire reputation 
 Friendly 0 = 3000), `--strict-caps`, `--category`, `--limit`, `--realm`, `--file`.
 With a price file it prints the cheapest route first (same planner as the website), then single-item options.
 `--help` lists every reward with its ticket cost and Wowhead link.
+`--ssf` is the self-found mode (see below): no price file, it plans by kills instead of gold.
 It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the Classic `_forever_` WTF path).
+
+## Self-found mode (no auction house)
+
+Tick "Self-found" in step 1 of the page (or pass `--ssf` to the CLI) to farm the items instead of buying them.
+The planner then minimises expected kills rather than gold, picking for each step the mob with the best drop
+chance that you can fight at your level (up to 2 levels above you), and lists the next best mobs too.
+Only the Animal Parts drop from mobs; the Blacksmithing, Engineering and Leatherworking turn-ins are crafted,
+so they are left out. Drop chances are looted / times the mob was looted in Wowhead Forever's data, for normal
+open-world mobs only (no elites, rares, dungeons, raids or battlegrounds, and at least 100 recorded loots).
+It is not time-aware: it doesn't know how dense a mob's spawns are, only how often it drops the item.
+
+To refresh the data, install `tools/wowhead-drops.user.js` in Tampermonkey, open each of the six Animal Parts item
+pages on Wowhead Forever, click "Save drops", then "Copy all" and save the JSON as `tools/results.json`.
+`node tools/build-drops.js` rewrites the `DROPS` block in `dmf.js` from it.
 
 ## Code layout
 

@@ -5,6 +5,12 @@
   const WTF_PATH = "C:\\Program Files (x86)\\World of Warcraft\\_forever_\\WTF\\Account";
 
   let realms = null;
+  const ssfBox = document.getElementById("ssf");
+  ssfBox.addEventListener("change", () => {
+    document.getElementById("prices").hidden = ssfBox.checked;
+    document.getElementById("ssf-note").hidden = !ssfBox.checked;
+    render();
+  });
 
   const loader = UI.fileLoader(document.getElementById("loader"), {path: WTF_PATH, onFile: loadFile});
   const table = UI.resultsTable(document.getElementById("results"));
@@ -32,9 +38,11 @@
   function render() {
     const v = filters.values();
     const opts = {target: v.target, tickets: v.tickets, level: v.level, rep: v.rep, repBonus: v.repBonus};
+    const ssf = ssfBox.checked;
+    if (ssf) DMF.applyFarm(ITEMS, v.level);           // best mob per item for this level
     const rows = DMF.calculate(ITEMS, opts);          // reference list (one row per item)
-    const plan = DMF.planRoute(ITEMS, opts);          // cheapest route respecting reputation caps
-    table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level});
+    const plan = DMF.planRoute(ITEMS, {...opts, ssf});   // cheapest route (gold, or kills when self-found) respecting reputation caps
+    table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level, ssf});
   }
 
   async function loadFile(file) {

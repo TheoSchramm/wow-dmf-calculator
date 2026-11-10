@@ -12,6 +12,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const k = argv[i];
     if (k === "--strict-caps") a.strict = true;
+    else if (k === "--ssf") a.ssf = true;
     else if (k === "--help" || k === "-h") a.help = true;
     else if (k.startsWith("--")) a[k.slice(2)] = argv[++i];
     else throw new Error(`Unknown argument ${k}`);
@@ -33,7 +34,7 @@ function main() {
   const a = parseArgs(process.argv.slice(2));
   if (a.help) {
     console.log(`Options: --level N (default ${DMF.MAX_LEVEL})  --tickets N  --target N|${Object.keys(GOAL_BY_KEY).join("|")} (default 50)  --rep N  --diplomat 0-5 (Legacy talent ranks)
-         --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
+         --ssf (self-found: farm Animal Parts from mobs, no prices)  --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
 Goals:`);
     for (const g of DMF.GOALS) console.log(`  ${g.key.padEnd(12)} ${String(g.tickets).padStart(4)} tickets  ${g.name}  ${DMF.WOWHEAD_ITEM_URL(g.id)}`);
     return;
@@ -44,8 +45,9 @@ Goals:`);
   if (goal) console.log(`Goal: ${goal.name} (${goal.tickets} tickets)  ${DMF.WOWHEAD_ITEM_URL(goal.id)}\n`);
   const items = DMF.ITEMS;
 
-  const file = a.file || newestAuctionator();
-  if (!file) console.log("Auctionator.lua not found; no prices, so only quests and items needed are shown.\n");
+  const file = a.ssf ? null : (a.file || newestAuctionator());
+  if (a.ssf) console.log("Self-found mode: fewest kills, no auction house. Crafted turn-ins are left out.\n");
+  else if (!file) console.log("Auctionator.lua not found; no prices, so only quests and items needed are shown.\n");
   else {
     const realms = DMF.parseAuctionator(new Uint8Array(fs.readFileSync(file)));
     const names = Object.keys(realms).filter(r => r !== "__dbversion");
@@ -65,18 +67,27 @@ Goals:`);
   const repBonus = Math.max(0, Math.min(DMF.DIPLOMAT.maxRanks, parseInt(a.diplomat, 10) || 0)) * DMF.DIPLOMAT.perRank;
   const rep = parseInt(a.rep, 10) || 0;   // points from Neutral 0 (Friendly 0 = 3000)
 
-  if (file) {
-    const plan = DMF.planRoute(items, {target, tickets, rep, level, repBonus});
+  if (a.ssf) DMF.applyFarm(items, level);
+  if (file || a.ssf) {
+    const ssf = !!a.ssf;
+    const plan = DMF.planRoute(items, {target, tickets, rep, level, repBonus, ssf});
     if (target - tickets <= 0) console.log(`You already have enough tickets. Take them to ${DMF.TICKET_NPC.name}.\n`);
     else if (!plan.ok) console.log(`Can't reach ${target} tickets from ${DMF.repText(rep)} at level ${level}: the most is ${plan.maxTickets} (${plan.reason}).\n`);
     else {
-      console.log(`ROUTE (reputation caps respected, start ${DMF.repText(rep)}): ${plan.tickets} tickets for ${plan.cost.toFixed(2)}g`);
-      plan.steps.forEach((s, i) => console.log(`  ${i + 1}. Buy ${s.items} x ${s.item.name} (${s.cost.toFixed(2)}g), turn in to ${s.item.npc} ${s.turnIns}x` +
-        `  -> ${s.ticketsAfter} tickets, ${DMF.repText(s.repBefore)} -> ${DMF.repText(s.repAfter)}`));
-      console.log(`  ${plan.steps.length + 1}. Take the tickets to ${DMF.TICKET_NPC.name}.\n\nSingle-item options:`);
+      console.log(`ROUTE (reputation caps respected, start ${DMF.repText(rep)}): ${plan.tickets} tickets for ${ssf ? `about ${Math.round(plan.cost)} kills` : `${plan.cost.toFixed(2)}g`}`);
+      plan.steps.forEach((s, i) => {
+        const m = ssf && s.item.farm.mob;
+        const how = ssf ? `Kill ${m.name} (${m.zone}, level ${m.minLevel}${m.maxLevel > m.minLevel ? "-" + m.maxLevel : ""}, ${(m.chance * 100).toFixed(1)}% drop) for ${s.items} x ${s.item.name} (~${Math.round(s.cost)} kills)`
+                            : `Buy ${s.items} x ${s.item.name} (${s.cost.toFixed(2)}g)`;
+        console.log(`  ${i + 1}. ${how}, turn in to ${s.item.npc} ${s.turnIns}x` +
+          `  -> ${s.ticketsAfter} tickets, ${DMF.repText(s.repBefore)} -> ${DMF.repText(s.repAfter)}`);
+        if (ssf && s.item.farm.others.length) console.log(`       also: ${s.item.farm.others.map(o => `${o.name} (${o.zone}, ${(o.chance * 100).toFixed(1)}%)`).join(", ")}`);
+      });
+      console.log(`  ${plan.steps.length + 1}. Take the tickets to ${DMF.TICKET_NPC.name}.\n` + (ssf ? "" : "\nSingle-item options:"));
     }
   }
 
+  if (a.ssf) return;
   const rows = DMF.calculate(items, {tickets, target, rep, repBonus, strict: !!a.strict, category: a.category || "", level});
   if (!rows.length) console.log(`No turn-ins available at level ${level} with these filters. Quests unlock at levels ${DMF.MIN_LEVEL.join(", ")}.`);
   for (const r of rows.slice(0, parseInt(a.limit, 10))) {
