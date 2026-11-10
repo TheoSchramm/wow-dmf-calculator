@@ -17,7 +17,7 @@ import io
 import os
 import urllib.request
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 BASE = "https://raw.githubusercontent.com/Gethe/wow-ui-textures/classic/"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "ui")
@@ -66,6 +66,20 @@ def remove_dragon_tail(im):
     return crop_alpha(im)
 
 
+def crest(size, ring, icon):
+    """Favicon: the page-header crest, i.e. the Darkmoon ticket icon cut to a circle inside COMMON/GoldRing.
+    Same proportions as the header (.crest: 88px ring, 64px icon inset 12px)."""
+    out = Image.new("RGBA", (size, size))
+    inner = round(size * 64 / 88)
+    off = (size - inner) // 2
+    ic = icon.resize((inner, inner), Image.LANCZOS)
+    mask = Image.new("L", (inner * 4, inner * 4))
+    ImageDraw.Draw(mask).ellipse((0, 0, inner * 4 - 1, inner * 4 - 1), fill=255)
+    out.paste(ic, (off, off), mask.resize((inner, inner), Image.LANCZOS))
+    out.alpha_composite(ring.resize((size, size), Image.LANCZOS))
+    return out
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     print("Writing to", os.path.normpath(OUT))
@@ -93,7 +107,11 @@ def main():
     save(fetch("Buttons/UI-EmptySlot"), "slot-empty")
     save(crop_alpha(fetch("AUCTIONFRAME/UI-AuctionItemNameFrame")), "row")
     save(fetch("QUESTFRAME/UI-QuestTitleHighlight"), "row-highlight")
-    save(fetch("COMMON/GoldRing"), "gold-ring")
+    ring = fetch("COMMON/GoldRing")
+    save(ring, "gold-ring")
+    ticket = fetch("ICONS/INV_Misc_Ticket_Darkmoon_01")
+    save(crest(64, ring, ticket), "favicon")
+    save(crest(32, ring, ticket), "favicon-32")
     save(crop_alpha(fetch("GossipFrame/AvailableQuestIcon")), "quest-icon")   # yellow "!" from NPC quest lists
     for coin in ("Gold", "Silver", "Copper"):
         save(fetch(f"MONEYFRAME/UI-{coin}Icon"), f"coin-{coin.lower()}")
