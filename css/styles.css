@@ -854,3 +854,10 @@ code {
   .frame--dragon .frame__dragon { width: 77px; height: 70px; top: -10px; left: -20px; }   /* -18px scaled to the smaller dragon */
   .path-row { flex-direction: column; align-items: stretch; }
 }
+
+/* Reputation bonus talent: icon, Wowhead spell link and rank picker */
+.diplomat { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.faction-link, .spell-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.faction-link:hover, .faction-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
+.spell-link { color: var(--normal); }
+.spell-link:hover, .spell-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }

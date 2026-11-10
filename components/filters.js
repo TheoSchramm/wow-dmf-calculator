@@ -30,7 +30,7 @@
             </label>
           </div>
           <div class="field">
-            <span class="field__label" id="rep-label">Your Darkmoon Faire reputation</span>
+            <span class="field__label" id="rep-label">Your ${UI.wowhead.factionLink()} reputation</span>
             <div class="rep-input">
               <select class="select" name="standing" aria-labelledby="rep-label">
                 ${DMF.STANDINGS.map(s => `<option value="${s.name}">${s.name}</option>`).join("")}
@@ -41,14 +41,13 @@
             <span class="field__hint">In game: Reputation tab (U). Each turn-in quest stops being offered once your reputation passes its limit.</span>
           </div>
           <div class="field">
-            <span class="field__label">Reputation bonuses</span>
-            <div class="filters__row">
-              <label class="checkbox"><input type="checkbox" name="human"> Human (Diplomacy, +${DMF.REP_BONUS.human * 100}%)</label>
-              <label class="checkbox">Legacy talent Diplomat
-                <select class="select" name="diplomat" aria-label="Diplomat ranks">
-                  ${Array.from({length: DMF.REP_BONUS.diplomatMaxRanks + 1}, (_, i) => `<option value="${i}">${i ? `Rank ${i} (+${Math.round(i * DMF.REP_BONUS.diplomatPerRank * 100)}%)` : "None"}</option>`).join("")}
-                </select>
-              </label>
+            <span class="field__label" id="diplomat-label">Reputation bonus</span>
+            <div class="diplomat">
+              ${UI.wowhead.spellIcon(DMF.DIPLOMAT)}
+              <span>${UI.wowhead.spellLink(DMF.DIPLOMAT)} (Legacy talent)</span>
+              <select class="select" name="diplomat" aria-labelledby="diplomat-label">
+                ${Array.from({length: DMF.DIPLOMAT.maxRanks + 1}, (_, i) => `<option value="${i}">${i ? `Rank ${i} (+${Math.round(i * DMF.DIPLOMAT.perRank * 100)}%)` : "Not learned"}</option>`).join("")}
+              </select>
             </div>
             <span class="field__hint">Raises the reputation each turn-in gives, so lower-tier quests close sooner.</span>
           </div>
@@ -115,7 +114,7 @@
         level: Math.min(maxLevel, Math.max(1, int(el("level").value, maxLevel))),
         tickets: Math.max(0, int(el("tickets").value, 0)),
         rep: DMF.repFromStanding(el("standing").value, el("repValue").value),
-        repBonus: (el("human").checked ? DMF.REP_BONUS.human : 0) + (+el("diplomat").value || 0) * DMF.REP_BONUS.diplomatPerRank,
+        repBonus: (+el("diplomat").value || 0) * DMF.DIPLOMAT.perRank,
         realm: el("realm").options.length ? el("realm").value : null,
       };
     }

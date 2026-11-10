@@ -50,6 +50,9 @@ const TICKET_NPC = {id: 14828, name: "Gelvas Grimegate"};
 for (const it of ITEMS) { it.npc = NPC[it.category].name; it.npcId = NPC[it.category].id; }
 const WOWHEAD_ITEM_URL = id => `https://www.wowhead.com/forever/item=${id}`;
 const WOWHEAD_NPC_URL = id => `https://www.wowhead.com/forever/npc=${id}`;
+const WOWHEAD_SPELL_URL = id => `https://www.wowhead.com/forever/spell=${id}`;
+const DMF_FACTION = {id: 909, name: "Darkmoon Faire"};
+const WOWHEAD_FACTION_URL = id => `https://www.wowhead.com/forever/faction=${id}`;
 const WOWHEAD_QUEST_URL = id => `https://www.wowhead.com/forever/quest=${id}`;
 const ICON_URL = (icon, size = "medium") => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`;
 const TICKET_VALUE = [1,4,8,12,20];
@@ -69,8 +72,9 @@ const STANDINGS = [
 // Sources: warcrafttavern.com/forever/guides/darkmoon-faire, zockify.com/classic/events/darkmoon-faire,
 // wowpedia.fandom.com/wiki/Darkmoon_Faire_(Classic).
 const REP_PER_QUEST = 250, REP_CAP = [500, 1100, 1700, 2500, 3000 + 5999];
-// Reputation bonuses add up (Human racial Diplomacy +10%, Legacy talent Diplomat +2% per rank, 5 ranks).
-const REP_BONUS = {human: 0.10, diplomatPerRank: 0.02, diplomatMaxRanks: 5};
+// Reputation bonus: the Legacy talent Diplomat, +2% per rank, 5 ranks (Wowhead Forever spell 1225485).
+// Forever removed the Human racial Diplomacy (it became this talent, open to every race), so no racial bonus.
+const DIPLOMAT = {id: 1225485, name: "Diplomat", icon: "inv_scroll_03", perRank: 0.02, maxRanks: 5};
 function repPerQuest(bonus = 0) { return Math.round(REP_PER_QUEST * (1 + (+bonus || 0))); }
 const TIER_UNLIMITED = 5;   // tier whose turn-ins never stop
 
@@ -280,8 +284,8 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL,
   return {ok: true, steps, cost: winner.cost / 100, tickets: t, repEnd: r};
 }
 
-const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, REP_BONUS, repPerQuest, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
-  WOWHEAD_ITEM_URL, WOWHEAD_QUEST_URL, WOWHEAD_NPC_URL, ICON_URL,
+const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, DIPLOMAT, repPerQuest, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
+  WOWHEAD_ITEM_URL, WOWHEAD_SPELL_URL, WOWHEAD_FACTION_URL, DMF_FACTION, WOWHEAD_QUEST_URL, WOWHEAD_NPC_URL, ICON_URL,
   parseAuctionator, realmPrices, applyPrices, calculate, planRoute, turnInsLeft, repFromStanding, repText};
 if (typeof module !== "undefined") module.exports = DMF; else globalThis.DMF = DMF;
 })();

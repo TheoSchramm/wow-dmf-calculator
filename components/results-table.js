@@ -27,7 +27,7 @@
           <div class="route__meta">
             ${stepQuests(s).map(wowhead.questLink).join(" then ")}
             &middot; You now have ${wowhead.tickets(s.ticketsAfter)}
-            &middot; Reputation ${esc(DMF.repText(s.repBefore))} &rarr; ${esc(DMF.repText(s.repAfter))}
+            &middot; ${wowhead.factionLink("Reputation")} ${esc(DMF.repText(s.repBefore))} &rarr; ${esc(DMF.repText(s.repAfter))}
           </div>
         </div>
       </li>`).join("");

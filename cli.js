@@ -8,11 +8,10 @@ const WOW_ROOT = process.env.WOW_ROOT || "C:\\Program Files (x86)\\World of Warc
 const GOAL_BY_KEY = Object.fromEntries(DMF.GOALS.map(g => [g.key, g]));
 
 function parseArgs(argv) {
-  const a = {tickets: "0", target: "50", rep: "0", limit: "3", level: String(DMF.MAX_LEVEL), human: false, diplomat: "0"};
+  const a = {tickets: "0", target: "50", rep: "0", limit: "3", level: String(DMF.MAX_LEVEL), diplomat: "0"};
   for (let i = 0; i < argv.length; i++) {
     const k = argv[i];
     if (k === "--strict-caps") a.strict = true;
-    else if (k === "--human") a.human = true;
     else if (k === "--help" || k === "-h") a.help = true;
     else if (k.startsWith("--")) a[k.slice(2)] = argv[++i];
     else throw new Error(`Unknown argument ${k}`);
@@ -33,7 +32,7 @@ function newestAuctionator() {
 function main() {
   const a = parseArgs(process.argv.slice(2));
   if (a.help) {
-    console.log(`Options: --level N (default ${DMF.MAX_LEVEL})  --tickets N  --target N|${Object.keys(GOAL_BY_KEY).join("|")} (default 50)  --rep N  --human  --diplomat 0-5
+    console.log(`Options: --level N (default ${DMF.MAX_LEVEL})  --tickets N  --target N|${Object.keys(GOAL_BY_KEY).join("|")} (default 50)  --rep N  --diplomat 0-5 (Legacy talent ranks)
          --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
 Goals:`);
     for (const g of DMF.GOALS) console.log(`  ${g.key.padEnd(12)} ${String(g.tickets).padStart(4)} tickets  ${g.name}  ${DMF.WOWHEAD_ITEM_URL(g.id)}`);
@@ -63,7 +62,7 @@ Goals:`);
   const tickets = parseInt(a.tickets, 10);
   const level = parseInt(a.level, 10);
   if (!(level >= 1 && level <= DMF.MAX_LEVEL)) throw new Error(`--level must be between 1 and ${DMF.MAX_LEVEL}`);
-  const repBonus = (a.human ? DMF.REP_BONUS.human : 0) + Math.max(0, Math.min(5, parseInt(a.diplomat, 10) || 0)) * DMF.REP_BONUS.diplomatPerRank;
+  const repBonus = Math.max(0, Math.min(DMF.DIPLOMAT.maxRanks, parseInt(a.diplomat, 10) || 0)) * DMF.DIPLOMAT.perRank;
   const rep = parseInt(a.rep, 10) || 0;   // points from Neutral 0 (Friendly 0 = 3000)
 
   if (file) {
