@@ -407,12 +407,25 @@ code {
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px 16px;
-  align-items: end;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px 20px;
+  align-items: start;
 }
-.filters__wide { grid-column: span 2; }
-.filters__check { align-self: center; }
+.filters__goal { grid-column: 1 / -1; max-width: 520px; }
+.field[hidden] { display: none; }
+.field__hint {
+  font-size: 12px;
+  color: var(--muted);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* one-sentence answer above the results */
+.summary {
+  margin-bottom: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.summary strong { font-weight: normal; color: var(--normal); }
 
 /* Selected goal's reward, laid out like a quest reward entry */
 .reward {
@@ -561,10 +574,8 @@ code {
   text-shadow: 1px 1px 0 #000;
 }
 .tag--best { color: var(--normal); }
-.tag--warn { color: var(--red); }
 .tag--muted { color: var(--disabled); }
 
-.level-req { color: var(--highlight); }
 
 /* ---------- Money: UI-GoldIcon / UI-SilverIcon / UI-CopperIcon ---------- */
 
@@ -623,5 +634,4 @@ code {
   .frame { padding: 44px 24px 26px; }
   .frame--dragon .frame__dragon { width: 88px; height: 88px; top: -22px; left: -20px; }
   .path-row { flex-direction: column; align-items: stretch; }
-  .filters__wide { grid-column: auto; }
 }

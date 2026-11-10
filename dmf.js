@@ -38,6 +38,9 @@ const ITEMS = [
   name, id, category, tier, qnt, icon, quality, questList: quests.map(([id, name]) => ({id, name})),
   minLevel: MIN_LEVEL[tier-1], price: null, live: false,
 }));
+// Darkmoon Faire NPC who takes each category's turn-ins (warcrafttavern.com/forever/guides/darkmoon-faire).
+const NPC = {"Animal Parts": "Yebb Neblegear", "Blacksmithing": "Kerri Hicks", "Engineering": "Rinling", "Leatherworking": "Chronos"};
+for (const it of ITEMS) it.npc = NPC[it.category];
 const WOWHEAD_ITEM_URL = id => `https://www.wowhead.com/forever/item=${id}`;
 const WOWHEAD_QUEST_URL = id => `https://www.wowhead.com/forever/quest=${id}`;
 const ICON_URL = (icon, size = "medium") => `https://wow.zamimg.com/images/wow/icons/${size}/${icon}.jpg`;

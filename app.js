@@ -1,6 +1,6 @@
 // App wiring: connects dmf.js (data + maths) to the UI components.
 (() => {
-  const {ITEMS, GOALS, MIN_LEVEL, MAX_LEVEL} = DMF;
+  const {ITEMS, GOALS, MAX_LEVEL} = DMF;
   // Folder to paste into the Windows file dialog (no account ID, so it's safe to publish)
   const WTF_PATH = "C:\\Program Files (x86)\\World of Warcraft\\_forever_\\WTF\\Account";
 
@@ -11,7 +11,6 @@
   const filters = UI.filters(document.getElementById("filters"), {
     goals: GOALS,
     defaultGoal: "box",
-    categories: [...new Set(ITEMS.map(i => i.category))],
     maxLevel: MAX_LEVEL,
     onChange(values, changed) {
       if (changed === "realm" && values.realm) applyRealm(values.realm);
@@ -22,18 +21,19 @@
   function applyRealm(name) {
     const prices = DMF.realmPrices(realms[name]);
     const n = DMF.applyPrices(ITEMS, prices);
+    const missing = ITEMS.length - n;
     loader.setStatus(
-      `Loaded ${Object.keys(prices).length} prices from realm "${name}". ${n} of ${ITEMS.length} turn-in items have prices; ` +
-      `items marked "No AH price" need an auction house scan in game and are listed last.`,
+      `Prices loaded (realm "${name}"). ` +
+      (missing ? `${missing} of ${ITEMS.length} items have no price yet; they're marked "No price yet" and listed last.`
+               : `All ${ITEMS.length} items have a price.`),
       "ok");
   }
 
   function render() {
     const v = filters.values();
-    const rows = DMF.calculate(ITEMS, {
-      target: v.target, rep: v.rep, strict: v.strict, tickets: v.tickets, category: v.category, level: v.level,
-    });
-    table.render(rows, {limit: v.limit, level: v.level, unlockLevels: MIN_LEVEL});
+    // The web page keeps it simple: no reputation-cap modelling (the CLI still has --rep / --strict-caps).
+    const rows = DMF.calculate(ITEMS, {target: v.target, tickets: v.tickets, level: v.level});
+    table.render(rows, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms});
   }
 
   async function loadFile(file) {
@@ -47,11 +47,13 @@
       applyRealm(names[0]);
       render();
     } catch (e) {
+      realms = null;
       loader.setLoaded(null);
       loader.setStatus(`Could not read ${file.name}: ${e.message}`, "error");
+      render();
     }
   }
 
-  loader.setStatus("No file loaded. Load Auctionator.lua to see prices; until then the list only shows quests and items needed.");
+  loader.setStatus("No file loaded yet.");
   render();
 })();

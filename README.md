@@ -22,6 +22,15 @@ World of Warcraft\_forever_\WTF\Account\<ACCOUNT>\SavedVariables\Auctionator.lua
 
 The file is parsed entirely in your browser and is never uploaded.
 
+The page has three steps:
+
+1. **Load your prices**: your `Auctionator.lua` (scan the auction house in game first, then `/reload`).
+2. **Choose your reward**: the prize you want, your character level and any tickets you already have.
+3. **Buy and turn in**: one sentence with the cheapest option, then every option cheapest first, with
+   the price of each item, how many to buy, how many times to turn in, the total cost and the NPC to visit.
+
+The page keeps it simple and ignores reputation caps; the command line can take them into account.
+
 ## Command line
 
 Needs [Node.js](https://nodejs.org) 16+. No dependencies.
@@ -67,8 +76,8 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
 - Quest quantities, tiers, ticket values and reputation caps come from the
   [Warcraft Tavern DMF guide](https://www.warcrafttavern.com/forever/guides/darkmoon-faire/).
   Each quest gives 250 reputation and each tier caps at 500/1100/1700/2500/5999. It's unverified
-  whether turn-ins past a cap still give tickets, so over-cap routes are flagged (or excluded with
-  strict caps) rather than assumed.
+  whether turn-ins past a cap still give tickets, so the command line flags over-cap routes (or excludes
+  them with `--strict-caps`, given your `--rep`) rather than assuming. The website does not use caps.
 - Tier 5 Animal Parts: Evil Bat Eyes (quest 7903) and Glowing Scorpid Blood (quest 8222) are separate
   quests, so they're separate options.
 
