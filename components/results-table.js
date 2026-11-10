@@ -31,7 +31,7 @@
       <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)}, about <span class="route__qty">${kills(s.cost)} kills</span>; ${turnIn}`;
   }
   const othersHtml = s => s.item.farm && s.item.farm.others.length
-    ? `<div class="route__meta">Also drops it: ${s.item.farm.others.map(m => `${mobLink(m)} (${esc(m.zone)}, ${levels(m)}, ${pct(m.chance)})`).join(", ")}</div>` : "";
+    ? `<div class="route__meta">Also drops it:${s.item.farm.others.map(m => `<br>${mobLink(m)} (${esc(m.zone)}, ${levels(m)}, ${pct(m.chance)})`).join("")}</div>` : "";
 
   function routeHtml(plan, goal, needed, ssf) {
     const steps = plan.steps.map(s => `
