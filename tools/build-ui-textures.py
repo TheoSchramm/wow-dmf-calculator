@@ -54,6 +54,18 @@ def crop_alpha(im):
     return im.crop(im.getchannel("A").getbbox())
 
 
+def remove_dragon_tail(im):
+    """UI-DialogBox-Gold-Dragon has a separate tail piece along the bottom that would reach into the
+    frame's content. Clear it (everything right of the body below y=80, and right of x=34 below y=97)."""
+    im = im.copy()
+    px = im.load()
+    for y in range(80, im.height):
+        x0 = 42 if y < 97 else 34
+        for x in range(x0, im.width):
+            px[x, y] = (0, 0, 0, 0)
+    return crop_alpha(im)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     print("Writing to", os.path.normpath(OUT))
@@ -65,7 +77,7 @@ def main():
     save(fetch("DialogFrame/UI-DialogBox-Background"), "frame-background")
     save(crop_alpha(fetch("DialogFrame/UI-DialogBox-Gold-Header")), "header-gold")
     save(crop_alpha(fetch("DialogFrame/UI-DialogBox-Divider")), "divider")
-    save(fetch("DialogFrame/UI-DialogBox-Gold-Dragon"), "dragon")
+    save(remove_dragon_tail(fetch("DialogFrame/UI-DialogBox-Gold-Dragon")), "dragon")
     save(fetch("FrameGeneral/UI-Background-Rock"), "page-background")
 
     # Red panel button: the game uses texcoords 0..0.625 x 0..0.6875 (80x22 of 128x32)

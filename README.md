@@ -54,7 +54,8 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
     buttons, edit boxes, check boxes, item slots, auction rows, highlights, coins) from `assets/ui/`.
   - `assets/ui/`: those textures, built by `python tools/build-ui-textures.py` (needs Pillow) from
     [Gethe/wow-ui-textures](https://github.com/Gethe/wow-ui-textures) (`classic` branch). The script only
-    crops them and rearranges border "edge files" into 9-slice images for CSS `border-image`.
+    crops them, rearranges border "edge files" into 9-slice images for CSS `border-image`, and removes the
+    gold dragon's tail so it doesn't reach into the frame.
     The art belongs to Blizzard Entertainment; this is a non-commercial fan tool.
   - `components/`: one file per UI piece, each a plain script that registers on `window.UI`
     (`money.js`, `file-loader.js`, `filters.js`, `results-table.js`). Plain scripts rather than ES modules,
