@@ -85,7 +85,7 @@ Goals:`);
       plan.steps.forEach((s, i) => {
         const m = ssf && s.item.farm.mob;
         const how = ssf ? `Kill ${m.name} (${m.zone}, level ${m.minLevel}${m.maxLevel > m.minLevel ? "-" + m.maxLevel : ""}, ${(m.chance * 100).toFixed(1)}% drop) for ${s.items} x ${s.item.name} (~${Math.round(s.cost)} kills)`
-                            : s.via === "craft" ? `Craft ${s.items} x ${s.item.name} (${s.craft.crafts} crafts) from ${s.craft.mats.map(m => `${m.qty} ${m.name}`).join(", ")} (${s.cost.toFixed(2)}g${s.ahPrice != null ? `, AH ${(s.ahPrice * s.items / 100).toFixed(2)}g` : ""})`
+                            : s.via === "craft" ? `Craft ${s.items} x ${s.item.name} (${s.craft.crafts} crafts) from ${s.craft.mats.map(m => `${m.qty} ${m.name}${m.vendor ? " (vendor)" : ""}`).join(", ")} (${s.cost.toFixed(2)}g${s.ahPrice != null ? `, AH ${(s.ahPrice * s.items / 100).toFixed(2)}g` : ""})`
                             : `Buy ${s.items} x ${s.item.name} (${s.cost.toFixed(2)}g)`;
         console.log(`  ${i + 1}. ${how}, turn in to ${s.item.npc} ${s.turnIns}x` +
           `  -> ${s.ticketsAfter} tickets, ${DMF.repText(s.repBefore)} -> ${DMF.repText(s.repAfter)}`);

@@ -61,8 +61,9 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
 Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in step 2, or pass
 `--prof Engineering:260,Leatherworking` to the CLI (`:skill` is optional, default 300). For those turn-ins the price becomes the cheaper of the auction
 price and the price of the materials, taken from the same Auctionator file, and the route says "Craft ..." with the
-materials to gather. Every material needs an Auctionator price (vendor materials such as thread and dyes too, so
-scan them or they show as "Materials not priced"). Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
+materials to gather. Every material needs an Auctionator price, except the ones a vendor sells (Coarse Thread, Fine Thread, Green Dye, Heavy
+Silken Thread): those cost the lower of the auction price and the vendor price, and the route marks them "(vendor)".
+Anything else without a price shows as "Materials not priced". Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
 needs come from wiki.gg's Classic values, not confirmed for Forever). Materials are priced as they
 are (a Solid Grinding Stone or Heavy Leather is not broken down further). Recipes come from Wowhead Forever;
 `node tools/build-recipes.js` regenerates them in `dmf.js`.

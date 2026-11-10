@@ -213,6 +213,10 @@ const DROPS_FROM = {"Animal Parts": true};   // categories whose items drop from
 // and item tooltips. Materials are priced from your Auctionator file, so a recipe needs every material priced.
 // Skill needs come from wiki.gg (Classic values, not confirmed for Forever); tools/build-recipes.js has the list.
 const MAX_SKILL = 300;
+// Materials a vendor sells (any trade goods / tailoring / leatherworking supplier), with the buy price in copper.
+// A material costs the lower of its auction price and this, and needs no Auctionator price at all.
+// Source: warcraft.wiki.gg (Thread, Green Dye); Classic prices, not confirmed for Forever.
+const VENDOR_PRICE = {2320: 10, 2321: 100, 2605: 100, 8343: 2000};   // Coarse Thread, Fine Thread, Green Dye, Heavy Silken Thread
 const PROFESSIONS = ["Blacksmithing", "Engineering", "Leatherworking"];
 // <recipes>
 const RECIPES = {
@@ -346,7 +350,7 @@ function realmPrices(blob) {
 // professions: the professions you have, as {category: skill level} (or just a list of names for full skill). For the
 // items you have the skill for, the price is the cheaper of the auction price and the price of the materials
 // (item.craft, per item). item.via says which one the price is ("ah" or "craft"); item.ahPrice is always the auction
-// price; item.craftMissing lists materials with no price (no craft price then); item.craftSkill is the skill you
+// price; item.craftMissing lists materials with no price (no craft price then); item.craftVendor lists the materials bought from a vendor; item.craftSkill is the skill you
 // are missing when you have the profession but not enough skill.
 function applyPrices(items, prices, professions = {}) {   // prices: {itemId: copper}; returns count of items with a price
   const can = new Map(Array.isArray(professions) ? professions.map(p => [p.toLowerCase(), MAX_SKILL])
@@ -355,13 +359,15 @@ function applyPrices(items, prices, professions = {}) {   // prices: {itemId: co
   for (const it of items) {
     const c = prices[it.id], recipe = RECIPES[it.id];
     it.ahPrice = c ? c / 100 : null;
-    it.craft = null; it.craftMissing = []; it.craftSkill = 0;
+    it.craft = null; it.craftMissing = []; it.craftSkill = 0; it.craftVendor = [];
     const skill = can.get(it.category.toLowerCase());
     if (recipe && skill != null && skill < recipe.skill) it.craftSkill = recipe.skill;
     else if (recipe && skill != null) {
       let total = 0;
       for (const [id, qty] of recipe.mats) {
-        if (prices[id]) total += qty * prices[id] / 100; else it.craftMissing.push(MATS[id][0]);
+        const ah = prices[id] || Infinity, vendor = VENDOR_PRICE[id] ?? Infinity, copper = Math.min(ah, vendor);
+        if (copper === Infinity) it.craftMissing.push(MATS[id][0]);
+        else { total += qty * copper / 100; if (vendor <= ah) it.craftVendor.push(id); }
       }
       if (!it.craftMissing.length) it.craft = total / recipe.yield;
     }
@@ -376,7 +382,7 @@ function applyPrices(items, prices, professions = {}) {   // prices: {itemId: co
 // How to craft `count` of an item: number of crafts and the materials to gather.
 function craftPlan(item, count) {
   const recipe = RECIPES[item.id], crafts = Math.ceil(count / recipe.yield);
-  return {crafts, yield: recipe.yield, mats: recipe.mats.map(([id, qty]) => ({id, name: MATS[id][0], icon: MATS[id][1], quality: MATS[id][2], qty: qty * crafts}))};
+  return {crafts, yield: recipe.yield, mats: recipe.mats.map(([id, qty]) => ({id, name: MATS[id][0], icon: MATS[id][1], quality: MATS[id][2], qty: qty * crafts, vendor: (item.craftVendor || []).includes(id)}))};
 }
 // Self-found mode: for each item, the mob that needs the fewest kills at this character level.
 // item.farm = {mob, kills (expected kills per item), others: next best mobs} or null when nothing drops it / nothing is fightable yet.
@@ -488,6 +494,6 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL,
 
 const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, DIPLOMAT, repPerQuest, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
   WOWHEAD_ITEM_URL, WOWHEAD_SPELL_URL, WOWHEAD_FACTION_URL, DMF_FACTION, WOWHEAD_QUEST_URL, WOWHEAD_ZONE_URL, WOWHEAD_NPC_URL, ICON_URL,
-  parseAuctionator, realmPrices, DROPS_FROM, PROFESSIONS, MAX_SKILL, RECIPES, MATS, applyPrices, applyFarm, calculate, planRoute, turnInsLeft, repFromStanding, repText};
+  parseAuctionator, realmPrices, DROPS_FROM, PROFESSIONS, MAX_SKILL, VENDOR_PRICE, RECIPES, MATS, applyPrices, applyFarm, calculate, planRoute, turnInsLeft, repFromStanding, repText};
 if (typeof module !== "undefined") module.exports = DMF; else globalThis.DMF = DMF;
 })();

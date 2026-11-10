@@ -26,7 +26,7 @@
   function stepAction(s, ssf) {
     const turnIn = `then turn them in to ${wowhead.npcLink(npcOf(s.item))} <span class="route__qty">${plural(s.turnIns, "time")}</span> (${s.item.qnt} per turn-in).`;
     if (!ssf && s.via === "craft") {
-      const c = s.craft, mats = c.mats.map(m => `<span class="route__qty">${m.qty} &times;</span> ${wowhead.itemLink(m)}`).join(", ");
+      const c = s.craft, mats = c.mats.map(m => `<span class="route__qty">${m.qty} &times;</span> ${wowhead.itemLink(m)}${m.vendor ? " (vendor)" : ""}`).join(", ");
       const ah = s.ahPrice != null ? ` instead of about ${UI.money(s.ahPrice * s.items * 100)} at the auction house` : "";
       return `Craft <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)} (${plural(c.crafts, "craft")}${c.yield > 1 ? `, ${c.yield} per craft` : ""})
         from ${mats} for about ${UI.money(s.cost * 10000)}${ah}, ${turnIn}`;
