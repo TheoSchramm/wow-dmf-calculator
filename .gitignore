@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 Auctionator.lua
 .env
+CLAUDE.md
