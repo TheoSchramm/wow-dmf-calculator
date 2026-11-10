@@ -408,6 +408,9 @@ code {
   cursor: copy;
 }
 
+.professions { display: grid; gap: 2px; margin-top: 10px; }
+.professions__list { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+
 /* UI-CheckBox-Up / -Check / -Highlight */
 .checkbox {
   display: inline-flex;

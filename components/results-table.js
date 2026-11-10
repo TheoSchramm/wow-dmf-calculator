@@ -25,6 +25,12 @@
   // First line of a step: buy it (auction house prices) or farm it (self-found, fewest kills).
   function stepAction(s, ssf) {
     const turnIn = `then turn them in to ${wowhead.npcLink(npcOf(s.item))} <span class="route__qty">${plural(s.turnIns, "time")}</span> (${s.item.qnt} per turn-in).`;
+    if (!ssf && s.via === "craft") {
+      const c = s.craft, mats = c.mats.map(m => `<span class="route__qty">${m.qty} &times;</span> ${wowhead.itemLink(m)}`).join(", ");
+      const ah = s.ahPrice != null ? ` instead of about ${UI.money(s.ahPrice * s.items * 100)} at the auction house` : "";
+      return `Craft <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)} (${plural(c.crafts, "craft")}${c.yield > 1 ? `, ${c.yield} per craft` : ""})
+        from ${mats} for about ${UI.money(s.cost * 10000)}${ah}, ${turnIn}`;
+    }
     if (!ssf) return `Buy <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)} for about ${UI.money(s.cost * 10000)}, ${turnIn}`;
     const m = s.item.farm.mob;
     return `Kill ${mobLink(m)} in ${zoneLink(m)} (${levels(m)}, ${pct(m.chance)} drop) until you loot
@@ -82,7 +88,10 @@
         const mobItem = DMF.DROPS_FROM[r.category];
         tags.push(`<span class="tag tag--muted" title="${mobItem ? "No mob you can fight at your level drops it." : "This item is crafted, no mob drops it."}">${mobItem ? "No mob at your level" : "Crafted"}</span>`);
       }
+    } else if (r.via === "craft") {
+      tags.push(`<span class="tag tag--muted" title="Cheaper to craft from materials (${r.craft.toFixed(1)}s each) than to buy at the auction house${r.ahPrice != null ? ` (${r.ahPrice.toFixed(1)}s)` : ""}.">Craft it</span>`);
     } else if (!r.live) tags.push('<span class="tag tag--muted" title="Your Auctionator file has no price for this item. Search for it at the auction house, then /reload.">No price yet</span>');
+    if (!ssf && r.craftMissing && r.craftMissing.length) tags.push(`<span class="tag tag--muted" title="Can't price crafting it: no auction price for ${UI.esc(r.craftMissing.join(", "))}. Scan them at the auction house, then /reload.">Materials not priced</span>`);
     if (r.turnInsLeft === 0) tags.push('<span class="tag tag--muted" title="Your reputation is past this quest\'s limit, so the NPC no longer offers it.">Closed at your reputation</span>');
     return `
       <div class="item">

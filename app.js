@@ -5,6 +5,9 @@
   const WTF_PATH = "C:\\Program Files (x86)\\World of Warcraft\\_forever_\\WTF\\Account";
 
   let realms = null;
+  let prices = null;      // prices of the selected realm: {itemId: copper}
+  const professions = () => [...document.querySelectorAll("[data-profession]:checked")].map(b => b.dataset.profession);
+  document.getElementById("professions").addEventListener("change", () => render());
   const ssfBox = document.getElementById("ssf");
   ssfBox.addEventListener("change", () => {
     document.getElementById("prices").hidden = ssfBox.checked;
@@ -25,8 +28,8 @@
   });
 
   function applyRealm(name) {
-    const prices = DMF.realmPrices(realms[name]);
-    const n = DMF.applyPrices(ITEMS, prices);
+    prices = DMF.realmPrices(realms[name]);
+    const n = DMF.applyPrices(ITEMS, prices, professions());
     const missing = ITEMS.length - n;
     loader.setStatus(
       `Prices loaded (realm "${name}"). ` +
@@ -39,6 +42,7 @@
     const v = filters.values();
     const opts = {target: v.target, tickets: v.tickets, level: v.level, rep: v.rep, repBonus: v.repBonus};
     const ssf = ssfBox.checked;
+    if (prices) DMF.applyPrices(ITEMS, prices, professions());   // craft from materials where you have the profession
     if (ssf) DMF.applyFarm(ITEMS, v.level);           // best mob per item for this level
     const rows = DMF.calculate(ITEMS, opts);          // reference list (one row per item)
     const plan = DMF.planRoute(ITEMS, {...opts, ssf});   // cheapest route (gold, or kills when self-found) respecting reputation caps
