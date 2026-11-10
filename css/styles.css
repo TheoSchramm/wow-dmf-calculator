@@ -755,8 +755,9 @@ code {
 .item__qty { color: var(--normal); font-family: var(--font-number); font-size: 13px; }
 .item__quests { display: grid; font-size: 12px; line-height: 1.35; }
 
-/* NPC names in the neutral-NPC yellow (Darkmoon Faire NPCs are neutral, so their names show yellow in game) */
-.npc-link { color: #ffff00; text-decoration: none; }
+/* NPC names in the same gold Wowhead's NPC tooltips use (#ffd100, the game's NORMAL_FONT_COLOR).
+   In game a neutral NPC's nameplate is pure yellow (#ffff00), but this matches the tooltips shown on hover. */
+.npc-link { color: var(--normal); text-decoration: none; }
 .npc-link:hover, .npc-link:focus-visible { text-decoration: underline; color: var(--highlight); }
 
 /* quest links in the quest log's yellow */
