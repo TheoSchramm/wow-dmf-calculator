@@ -94,6 +94,7 @@ def main():
     save(crop_alpha(fetch("AUCTIONFRAME/UI-AuctionItemNameFrame")), "row")
     save(fetch("QUESTFRAME/UI-QuestTitleHighlight"), "row-highlight")
     save(fetch("COMMON/GoldRing"), "gold-ring")
+    save(crop_alpha(fetch("GossipFrame/AvailableQuestIcon")), "quest-icon")   # yellow "!" from NPC quest lists
     for coin in ("Gold", "Silver", "Copper"):
         save(fetch(f"MONEYFRAME/UI-{coin}Icon"), f"coin-{coin.lower()}")
 

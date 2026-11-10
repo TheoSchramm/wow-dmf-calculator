@@ -26,7 +26,7 @@
           alt=" tickets" title="Darkmoon Faire Prize Ticket" onerror="this.replaceWith(' tickets')"></span>`;
     },
     questLink(quest) {
-      return `<a class="quest-link" href="${esc(DMF.WOWHEAD_QUEST_URL(quest.id))}" target="_blank" rel="noopener">${esc(quest.name)}</a>`;
+      return `<a class="quest-link" href="${esc(DMF.WOWHEAD_QUEST_URL(quest.id))}" target="_blank" rel="noopener"><span class="quest-link__icon" aria-hidden="true"></span>${esc(quest.name)}</a>`;
     },
   };
 })();

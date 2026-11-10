@@ -678,6 +678,16 @@ code {
 /* quest links in the quest log's yellow */
 .quest-link { color: var(--normal); text-decoration: none; }
 .quest-link:hover, .quest-link:focus-visible { text-decoration: underline; color: var(--highlight); }
+/* GossipFrame/AvailableQuestIcon: the yellow "!" NPCs show next to quests */
+.quest-link__icon {
+  display: inline-block;
+  width: 6px;
+  height: 14px;
+  margin-right: 3px;
+  vertical-align: -2px;
+  background: url("../assets/ui/quest-icon.png") center / contain no-repeat;
+  filter: drop-shadow(1px 1px 0 #000);
+}
 
 .no-price {
   font-family: var(--font);
