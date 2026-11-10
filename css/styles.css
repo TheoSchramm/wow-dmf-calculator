@@ -9,6 +9,13 @@
    with ADD blending; mix-blend-mode: screen reproduces that on the web.
    ========================================================================== */
 
+/* WoW's UI font (Friz Quadrata TT), served from assets/fonts/ */
+@font-face {
+  font-family: "Friz Quadrata TT";
+  src: local("Friz Quadrata TT"), url("../assets/fonts/frizqt.ttf") format("truetype");
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
 

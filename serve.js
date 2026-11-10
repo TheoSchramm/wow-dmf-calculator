@@ -4,10 +4,10 @@ const http = require("http"), fs = require("fs"), path = require("path");
 const PORT = +process.argv[2] || 8080;
 const BASE = "/wow-dmf-calculator";   // GitHub Pages project sites live at /<repo-name>/
 const TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
-  ".css": "text/css; charset=utf-8", ".json": "application/json", ".lua": "text/plain; charset=utf-8", ".png": "image/png"};
+  ".css": "text/css; charset=utf-8", ".json": "application/json", ".lua": "text/plain; charset=utf-8", ".png": "image/png", ".ttf": "font/ttf"};
 // Only what you'd actually publish: the page, its scripts, the stylesheet and UI components.
 const PUBLIC = new Set(["index.html", "dmf.js", "app.js"]);
-const PUBLIC_DIRS = /^(css\/[\w-]+\.css|components\/[\w-]+\.js|assets\/ui\/[\w-]+\.png)$/;
+const PUBLIC_DIRS = /^(css\/[\w-]+\.css|components\/[\w-]+\.js|assets\/ui\/[\w-]+\.png|assets\/fonts\/[\w-]+\.ttf)$/i;
 
 http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split("?")[0]);
