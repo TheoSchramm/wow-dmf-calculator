@@ -34,7 +34,7 @@ function main() {
   const a = parseArgs(process.argv.slice(2));
   if (a.help) {
     console.log(`Options: --level N (default ${DMF.MAX_LEVEL})  --tickets N  --target N|${Object.keys(GOAL_BY_KEY).join("|")} (default 50)  --rep N  --diplomat 0-5 (Legacy talent ranks)
-         --prof Blacksmithing,Engineering,Leatherworking (craft those turn-ins from materials when cheaper)  --ssf (self-found: farm Animal Parts from mobs, no prices)  --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
+         --prof Blacksmithing:225,Engineering (craft those turn-ins from materials when cheaper; optional :skill, default 300)  --ssf (self-found: farm Animal Parts from mobs, no prices)  --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
 Goals:`);
     for (const g of DMF.GOALS) console.log(`  ${g.key.padEnd(12)} ${String(g.tickets).padStart(4)} tickets  ${g.name}  ${DMF.WOWHEAD_ITEM_URL(g.id)}`);
     return;
@@ -44,11 +44,13 @@ Goals:`);
   if (!(target > 0)) throw new Error(`--target must be a ticket count or one of: ${Object.keys(GOAL_BY_KEY).join(", ")}`);
   if (goal) console.log(`Goal: ${goal.name} (${goal.tickets} tickets)  ${DMF.WOWHEAD_ITEM_URL(goal.id)}\n`);
   const items = DMF.ITEMS;
-  const profs = String(a.prof || "").split(",").map(p => p.trim()).filter(Boolean).map(p => {
-    const known = DMF.PROFESSIONS.find(k => k.toLowerCase() === p.toLowerCase());
-    if (!known) throw new Error(`--prof: unknown profession '${p}'. Use: ${DMF.PROFESSIONS.join(", ")}`);
-    return known;
-  });
+  const profs = {};   // {profession: skill}
+  for (const part of String(a.prof || "").split(",").map(p => p.trim()).filter(Boolean)) {
+    const [name, skill] = part.split(":");
+    const known = DMF.PROFESSIONS.find(k => k.toLowerCase() === name.toLowerCase());
+    if (!known) throw new Error(`--prof: unknown profession '${name}'. Use: ${DMF.PROFESSIONS.join(", ")}`);
+    profs[known] = Math.min(DMF.MAX_SKILL, parseInt(skill, 10) || DMF.MAX_SKILL);
+  }
 
   const file = a.ssf ? null : (a.file || newestAuctionator());
   if (a.ssf) console.log("Self-found mode: fewest kills, no auction house. Crafted turn-ins are left out.\n");

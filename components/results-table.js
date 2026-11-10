@@ -92,6 +92,7 @@
       tags.push(`<span class="tag tag--muted" title="Cheaper to craft from materials (${r.craft.toFixed(1)}s each) than to buy at the auction house${r.ahPrice != null ? ` (${r.ahPrice.toFixed(1)}s)` : ""}.">Craft it</span>`);
     } else if (!r.live) tags.push('<span class="tag tag--muted" title="Your Auctionator file has no price for this item. Search for it at the auction house, then /reload.">No price yet</span>');
     if (!ssf && r.craftMissing && r.craftMissing.length) tags.push(`<span class="tag tag--muted" title="Can't price crafting it: no auction price for ${UI.esc(r.craftMissing.join(", "))}. Scan them at the auction house, then /reload.">Materials not priced</span>`);
+    if (!ssf && r.craftSkill) tags.push(`<span class="tag tag--muted" title="Crafting it needs ${UI.esc(r.category)} ${r.craftSkill}; you entered a lower skill.">Needs skill ${r.craftSkill}</span>`);
     if (r.turnInsLeft === 0) tags.push('<span class="tag tag--muted" title="Your reputation is past this quest\'s limit, so the NPC no longer offers it.">Closed at your reputation</span>');
     return `
       <div class="item">

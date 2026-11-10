@@ -11,6 +11,13 @@ const SPELLS = {   // crafted item id -> spell id
   4363: 3926, 4375: 3942, 9313: 23068, 11590: 15255, 15994: 19791,        // Engineering
   2309: 2161, 2314: 2166, 5739: 6661, 8185: 10556, 15564: 19058,          // Leatherworking
 };
+// Profession skill needed to craft each item (wiki.gg item pages, "crafted with <profession> (N)"; the Classic values,
+// not confirmed against Forever). Copper Modulator: Classic guides say 65.
+const SKILLS = {
+  3240: 65, 3486: 125, 3835: 165, 7945: 230, 12644: 250,
+  4363: 65, 4375: 125, 9313: 150, 11590: 200, 15994: 260,
+  2309: 55, 2314: 120, 5739: 190, 8185: 235, 15564: 250,
+};
 const API = "https://nether.wowhead.com/forever/tooltip";
 const get = async (kind, id) => {
   const r = await fetch(`${API}/${kind}/${id}`);
@@ -28,7 +35,7 @@ const get = async (kind, id) => {
     if (!created) throw new Error(`spell ${spellId} (${j.name}) does not make item ${itemId}`);
     const reagentHtml = t.slice(start, start + created.index);
     const list = [...reagentHtml.matchAll(/item=(\d+)[^"]*">([^<]+)<\/a>(?:&nbsp;\((\d+)\))?/g)].map(m => [+m[1], +(m[3] || 1), m[2]]);
-    recipes[itemId] = {spell: +spellId, yield: +(created[1] || 1), name: j.name, mats: list.map(([id, q]) => [id, q])};
+    recipes[itemId] = {spell: +spellId, skill: SKILLS[itemId], yield: +(created[1] || 1), name: j.name, mats: list.map(([id, q]) => [id, q])};
     for (const [id, , name] of list) mats[id] = {name};
     console.log(`${j.name}: ${list.map(([, q, n]) => `${q} ${n}`).join(", ")} -> ${created[1] || 1}`);
   }
@@ -38,7 +45,7 @@ const get = async (kind, id) => {
   }
   const rows = Object.keys(recipes).map(Number).sort((a, b) => a - b).map(id => {
     const r = recipes[id];
-    return `  ${id}: {spell: ${r.spell}, yield: ${r.yield}, mats: ${JSON.stringify(r.mats)}},   // ${r.name}`;
+    return `  ${id}: {spell: ${r.spell}, skill: ${r.skill}, yield: ${r.yield}, mats: ${JSON.stringify(r.mats)}},   // ${r.name}`;
   });
   const matRows = Object.keys(mats).map(Number).sort((a, b) => a - b).map(id => `  ${id}: ${JSON.stringify(mats[id])},`);
   const block = `// <recipes>\nconst RECIPES = {\n${rows.join("\n")}\n};\nconst MATS = {\n${matRows.join("\n")}\n};\n  // </recipes>`;

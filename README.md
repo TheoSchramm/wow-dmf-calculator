@@ -59,10 +59,11 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
 ## Crafting your own turn-ins
 
 Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in step 1, or pass
-`--prof Engineering,Leatherworking` to the CLI. For those turn-ins the price becomes the cheaper of the auction
+`--prof Engineering:260,Leatherworking` to the CLI (`:skill` is optional, default 300). For those turn-ins the price becomes the cheaper of the auction
 price and the price of the materials, taken from the same Auctionator file, and the route says "Craft ..." with the
 materials to gather. Every material needs an Auctionator price (vendor materials such as thread and dyes too, so
-scan them or they show as "Materials not priced"). Skill levels are not checked, and materials are priced as they
+scan them or they show as "Materials not priced"). Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
+needs come from wiki.gg's Classic values, not confirmed for Forever). Materials are priced as they
 are (a Solid Grinding Stone or Heavy Leather is not broken down further). Recipes come from Wowhead Forever;
 `node tools/build-recipes.js` regenerates them in `dmf.js`.
 

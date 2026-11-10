@@ -6,8 +6,22 @@
 
   let realms = null;
   let prices = null;      // prices of the selected realm: {itemId: copper}
-  const professions = () => [...document.querySelectorAll("[data-profession]:checked")].map(b => b.dataset.profession);
-  document.getElementById("professions").addEventListener("change", () => render());
+  // {profession: skill level} for the ticked professions; the skill box only shows while its profession is ticked
+  const professions = () => Object.fromEntries([...document.querySelectorAll("[data-profession]:checked")].map(b => {
+    const skill = parseInt(document.querySelector(`[data-skill="${b.dataset.profession}"]`).value, 10);
+    return [b.dataset.profession, Math.min(DMF.MAX_SKILL, Math.max(1, Number.isFinite(skill) ? skill : DMF.MAX_SKILL))];
+  }));
+  const professionsBox = document.getElementById("professions");
+  professionsBox.addEventListener("change", e => {
+    if (e.target.dataset.profession) e.target.closest(".profession").querySelector(".profession__skill").hidden = !e.target.checked;
+    render();
+  });
+  professionsBox.addEventListener("input", e => {
+    if (!e.target.hasAttribute("data-digits")) return;      // digits only
+    const clean = e.target.value.replace(/\D/g, "");
+    if (clean !== e.target.value) e.target.value = clean;
+    render();
+  });
   const ssfBox = document.getElementById("ssf");
   ssfBox.addEventListener("change", () => {
     document.getElementById("prices").hidden = ssfBox.checked;       // step 1 is not needed without the auction house
