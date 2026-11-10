@@ -1,11 +1,14 @@
 # DMF Turn-in Calculator
 
 Finds the cheapest Darkmoon Faire profession turn-ins (Animal Parts, Blacksmithing,
-Engineering, Leatherworking) for WoW Classic, using your own Auctionator prices.
+Engineering, Leatherworking) for WoW Forever, using your own Auctionator prices.
+
+**Website: https://theoschramm.github.io/wow-dmf-calculator/**
 
 ## Web version (GitHub Pages)
 
-Open `index.html` (or the published Pages site), then drop in your `Auctionator.lua`:
+Open the [website](https://theoschramm.github.io/wow-dmf-calculator/) (or a local copy of `index.html`),
+then drop in your `Auctionator.lua`:
 
 ```
 World of Warcraft\_forever_\WTF\Account\<ACCOUNT>\SavedVariables\Auctionator.lua
@@ -65,4 +68,7 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
 
 ## Publishing
 
-Push to GitHub, then Settings > Pages > Deploy from branch > `main` / root.
+The site is deployed to https://theoschramm.github.io/wow-dmf-calculator/ by GitHub Actions
+(`.github/workflows/pages.yml`) on every push to `main`; it can also be run by hand from the Actions tab.
+Only the site files are published (`index.html`, `app.js`, `dmf.js`, `css/`, `components/`, `assets/`).
+Pages source must be set to "GitHub Actions" (Settings > Pages).
