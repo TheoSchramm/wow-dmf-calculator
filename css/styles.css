@@ -1,0 +1,608 @@
+/* ==========================================================================
+   DMF Turn-in Calculator: styled with Blizzard's own WoW Classic UI textures.
+
+   Every frame, button, edit box, check box, item slot, coin and highlight below
+   is a real game texture from assets/ui/ (built by tools/build-ui-textures.py from
+   github.com/Gethe/wow-ui-textures, branch "classic"). CSS only places them.
+
+   Game textures marked "additive" (button/row/check highlights) are drawn in WoW
+   with ADD blending; mix-blend-mode: screen reproduces that on the web.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* FrameXML font colours */
+  --normal: #ffd100;        /* NORMAL_FONT_COLOR (1, 0.82, 0) */
+  --highlight: #ffffff;     /* HIGHLIGHT_FONT_COLOR */
+  --disabled: #808080;      /* GRAY_FONT_COLOR */
+  --green: #1aff1a;         /* GREEN_FONT_COLOR (0.1, 1, 0.1) */
+  --red: #ff1a1a;           /* RED_FONT_COLOR */
+  --body: #e6d8b8;
+  --muted: #a8a08a;
+
+  /* Item quality */
+  --q0: #9d9d9d;
+  --q1: #ffffff;
+  --q2: #1eff00;
+  --q3: #0070dd;
+  --q4: #a335ee;
+
+  /* GameFontNormal is Friz Quadrata; used if installed, otherwise a close serif */
+  --font: "Friz Quadrata TT", "Friz Quadrata Std", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --font-number: "Arial Narrow", Arial, sans-serif;   /* NumberFontNormal is Arial Narrow */
+  --font-mono: Consolas, "Cascadia Mono", monospace;
+
+  --shadow: 1px -1px 0 #000, 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000;
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: #0a0806; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--body);
+  font: 15px/1.45 var(--font);
+  /* UI-Background-Rock under a dark vignette */
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85) 75%),
+    url("../assets/ui/page-background.png") repeat;
+  background-attachment: fixed;
+}
+
+a { color: var(--normal); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--highlight);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* ---------- Page ---------- */
+
+.page {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 28px 16px 64px;
+}
+
+.page-header { text-align: center; }
+
+/* Darkmoon ticket icon inside COMMON/GoldRing */
+.crest {
+  position: relative;
+  display: inline-block;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 4px;
+}
+.crest img {
+  position: absolute;
+  inset: 12px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+.crest::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../assets/ui/gold-ring.png") center / 100% 100% no-repeat;
+}
+
+.page-header__eyebrow {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--normal);
+  text-shadow: var(--shadow);
+}
+
+.page-header__title {
+  margin: 2px 0 6px;
+  font-size: clamp(28px, 6vw, 42px);
+  font-weight: normal;
+  line-height: 1.1;
+  color: var(--normal);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 0 0 14px rgba(0, 0, 0, 0.9);
+}
+
+.page-header__lead {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--body);
+  font-size: 14px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* UI-DialogBox-Divider */
+.divider {
+  height: 16px;
+  max-width: 520px;
+  margin: 14px auto 0;
+  border-style: solid;
+  border-width: 0 8px;
+  border-image: url("../assets/ui/divider.png") 0 8 fill / 0 8px stretch;
+}
+
+/* ---------- Frame: UI-DialogBox-Gold-Border + UI-DialogBox-Background ---------- */
+/* Like a WoW backdrop: tiled background inset 11px, 32px edge drawn on top. */
+
+/* Drawn at 1.25x the game's 32px edge (insets 11 -> 14) so it reads at web sizes. */
+.frame {
+  position: relative;
+  isolation: isolate;
+  margin-top: 52px;
+  padding: 46px 34px 32px;
+}
+.frame::before {               /* backdrop background, inset like the game's insets */
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: -1;
+  background: url("../assets/ui/frame-background.png") repeat;
+}
+.frame::after {                /* edge file, drawn above the background */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 40px solid transparent;
+  border-image: url("../assets/ui/frame-border-gold.png") 32 / 40px round;
+}
+
+/* UI-DialogBox-Gold-Header plate, stretched between its ornamented ends */
+.frame__title {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  height: 50px;
+  padding: 0 20px;
+  max-width: calc(100% - 60px);
+  border-style: solid;
+  border-width: 0 28px;
+  border-image: url("../assets/ui/header-gold.png") 0 22 fill / 0 28px stretch;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--normal);
+  text-shadow: var(--shadow);
+}
+
+/* UI-DialogBox-Gold-Dragon on the frame's top-left corner */
+.frame--dragon .frame__dragon {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 128px;
+  height: 128px;
+  z-index: 3;
+  pointer-events: none;
+  background: url("../assets/ui/dragon.png") center / contain no-repeat;
+}
+
+.frame__note {
+  margin: 0 0 12px;
+  color: var(--body);
+  font-size: 13px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* ---------- Tooltip box: UI-Tooltip-Border, GameTooltip colours ---------- */
+
+.tooltip {
+  position: relative;
+  isolation: isolate;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--highlight);
+  text-shadow: 1px 1px 0 #000;
+}
+.tooltip::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  background: rgba(23, 23, 48, 0.92);   /* TOOLTIP_DEFAULT_BACKGROUND_COLOR (0.09, 0.09, 0.19) */
+}
+.tooltip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 16px solid transparent;
+  border-image: url("../assets/ui/tooltip-border.png") 16 / 16px round;
+}
+.tooltip--ok { color: var(--green); }
+.tooltip--error { color: var(--red); }
+
+/* ---------- Form controls ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.field__label {
+  font-size: 13px;
+  color: var(--normal);
+  text-shadow: var(--shadow);
+}
+
+/* Common-Input-Border edit box (3-slice) */
+.input,
+.select {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 0 4px;
+  font: 14px var(--font);
+  color: var(--highlight);
+  background: none;
+  border-style: solid;
+  border-width: 0 8px;
+  border-image: url("../assets/ui/input.png") 0 8 fill / 0 8px stretch;
+  outline: none;
+  text-shadow: 1px 1px 0 #000;
+}
+.input:focus,
+.select:focus { filter: brightness(1.35); }
+.select { cursor: pointer; }
+.select:disabled { color: var(--disabled); cursor: not-allowed; }
+.select option { background: #17171f; color: var(--highlight); }
+
+.input--path {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: copy;
+}
+
+/* UI-CheckBox-Up / -Check / -Highlight */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--normal);
+  font-size: 14px;
+  text-shadow: var(--shadow);
+}
+.checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  background: url("../assets/ui/checkbox.png") center / 100% no-repeat;
+  cursor: pointer;
+}
+.checkbox input:checked { background-image: url("../assets/ui/checkbox-check.png"), url("../assets/ui/checkbox.png"); }
+.checkbox input::after {                 /* additive highlight */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../assets/ui/checkbox-highlight.png") center / 100% no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.checkbox:hover input::after,
+.checkbox input:focus-visible::after { opacity: 1; }
+
+/* UI-Panel-Button-Up / -Down / -Highlight */
+.button {
+  position: relative;
+  display: inline-block;
+  height: 28px;
+  padding: 0 14px;
+  font: 14px var(--font);
+  color: var(--normal);
+  text-shadow: var(--shadow);
+  background: none;
+  border-style: solid;
+  border-width: 0 10px;
+  border-image: url("../assets/ui/button-up.png") 0 10 fill / 0 10px stretch;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0 -10px;
+  background: url("../assets/ui/button-highlight.png") center / 100% 100% no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+}
+.button:hover { color: var(--highlight); }
+.button:hover::after,
+.button:focus-visible::after { opacity: 1; }
+.button:active {
+  border-image-source: url("../assets/ui/button-down.png");
+  padding-top: 2px;
+}
+.button:disabled {
+  border-image-source: url("../assets/ui/button-disabled.png");
+  color: var(--disabled);
+  cursor: default;
+}
+
+/* ---------- File loader ---------- */
+
+.loader {
+  display: grid;
+  gap: 14px;
+}
+
+.drop-zone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border: 1px dashed rgba(255, 209, 0, 0.35);
+  background: rgba(0, 0, 0, 0.35);
+}
+.drop-zone:hover,
+.drop-zone:focus-within,
+.drop-zone.is-over {
+  border-style: solid;
+  border-color: rgba(255, 209, 0, 0.8);
+  background: rgba(255, 209, 0, 0.06);
+}
+.drop-zone__text { display: grid; gap: 2px; }
+.drop-zone__title { color: var(--normal); text-shadow: var(--shadow); }
+.drop-zone__hint { color: var(--muted); font-size: 13px; }
+
+/* UI-EmptySlot, turns into a filled bag slot once a file is loaded */
+.slot {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  background: url("../assets/ui/slot-empty.png") center / 100% no-repeat;
+}
+.drop-zone.is-loaded .slot {
+  background:
+    url("../assets/ui/slot-frame.png") center / 100% no-repeat,
+    url("https://wow.zamimg.com/images/wow/icons/medium/inv_scroll_03.jpg") center / 32px no-repeat;
+}
+
+.path-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.path-row .input { flex: 1; }
+
+.copy-feedback {
+  min-height: 1.3em;
+  margin: 0;
+  font-size: 13px;
+  color: var(--green);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* ---------- Filters ---------- */
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px 16px;
+  align-items: end;
+}
+.filters__wide { grid-column: span 2; }
+.filters__check { align-self: center; }
+
+/* Selected goal's reward, laid out like a quest reward entry */
+.reward {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+.reward__label {
+  color: var(--normal);
+  font-size: 13px;
+  text-shadow: var(--shadow);
+}
+.reward .item { flex: 1 1 320px; max-width: 520px; }
+
+/* ---------- Results (auction house browse list) ---------- */
+
+.table-wrap { overflow-x: auto; }
+
+.ah-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: separate;
+  border-spacing: 0 2px;
+  font-size: 14px;
+}
+
+.ah-table th {
+  padding: 4px 8px 8px;
+  font-weight: normal;
+  font-size: 13px;
+  text-align: left;
+  color: var(--normal);
+  text-shadow: var(--shadow);
+  white-space: nowrap;
+  border-bottom: 16px solid transparent;
+  border-image: url("../assets/ui/divider.png") 0 8 16 / 0 0 16px stretch;
+}
+
+.ah-table td {
+  padding: 3px 8px;
+  vertical-align: middle;
+  color: var(--highlight);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* UI-QuestTitleHighlight (additive) across the hovered / best row */
+.ah-table tbody tr { background-repeat: no-repeat; background-size: 100% 100%; }
+.ah-table tbody tr:hover,
+.ah-table tbody tr.is-best { background-image: url("../assets/ui/row-highlight.png"); }
+
+.ah-table .num {
+  text-align: right;
+  font-family: var(--font-number);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ah-table .empty td {
+  padding: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* item: icon in UI-Quickslot2 + name in UI-AuctionItemNameFrame */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.item__icon {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin: 4px;
+  font: 15px/34px var(--font);
+  text-align: center;
+  text-decoration: none;
+  color: var(--highlight);
+  text-shadow: var(--shadow);
+  background: #111;
+}
+.item__icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.item__icon::after {                     /* UI-Quickslot2 slot frame around the icon */
+  content: "";
+  position: absolute;
+  inset: -12px;
+  background: url("../assets/ui/slot-frame.png") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.item__count {                            /* stack count, NumberFontNormal style */
+  position: absolute;
+  right: 1px;
+  bottom: -1px;
+  z-index: 1;
+  font: 13px/1 var(--font-number);
+  color: var(--highlight);
+  text-shadow: var(--shadow);
+}
+
+.item__name {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  align-content: center;
+  padding: 2px 6px;
+  line-height: 1.25;
+  border-style: solid;
+  border-width: 8px;
+  border-image: url("../assets/ui/row.png") 8 fill / 8px stretch;
+}
+.item__title { text-decoration: none; }
+.item__title:hover, .item__title:focus-visible { text-decoration: underline; }
+.item__meta { font-size: 12px; color: var(--muted); }
+
+/* quest links in the quest log's yellow */
+.quest-link { color: var(--normal); text-decoration: none; }
+.quest-link:hover, .quest-link:focus-visible { text-decoration: underline; color: var(--highlight); }
+
+.no-price {
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--disabled);
+}
+
+.q0 { color: var(--q0); }
+.q1 { color: var(--q1); }
+.q2 { color: var(--q2); }
+.q3 { color: var(--q3); }
+.q4 { color: var(--q4); }
+
+/* small status words after the item name, coloured like in-game tooltip lines */
+.tag {
+  margin-left: 8px;
+  font-size: 12px;
+  text-shadow: 1px 1px 0 #000;
+}
+.tag--best { color: var(--normal); }
+.tag--warn { color: var(--red); }
+.tag--muted { color: var(--disabled); }
+
+.level-req { color: var(--highlight); }
+
+/* ---------- Money: UI-GoldIcon / UI-SilverIcon / UI-CopperIcon ---------- */
+
+.money {
+  white-space: nowrap;
+  font-family: var(--font-number);
+  color: var(--highlight);
+}
+.money__part { margin-left: 5px; }
+.money__part:first-child { margin-left: 0; }
+.money__part::after {
+  content: "";
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: center / 100% no-repeat;
+}
+.money__part--gold::after   { background-image: url("../assets/ui/coin-gold.png"); }
+.money__part--silver::after { background-image: url("../assets/ui/coin-silver.png"); }
+.money__part--copper::after { background-image: url("../assets/ui/coin-copper.png"); }
+
+/* ---------- Footer ---------- */
+
+.page-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 600px) {
+  .frame { padding: 44px 24px 26px; }
+  .frame--dragon .frame__dragon { width: 88px; height: 88px; top: -22px; left: -20px; }
+  .path-row { flex-direction: column; align-items: stretch; }
+  .filters__wide { grid-column: auto; }
+}

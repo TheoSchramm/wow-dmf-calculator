@@ -1,0 +1,5 @@
+{
+  "name": "wow-dmf-calculator",
+  "private": true,
+  "scripts": { "dev": "node serve.js" }
+}

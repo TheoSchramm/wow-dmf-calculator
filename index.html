@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DMF Turn-in Calculator</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="page">
+  <header class="page-header">
+    <span class="crest" aria-hidden="true">
+      <img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_ticket_darkmoon_01.jpg" alt="" width="56" height="56" onerror="this.parentNode.remove()">
+    </span>
+    <p class="page-header__eyebrow">World of Warcraft Forever</p>
+    <h1 class="page-header__title">Darkmoon Faire Turn-ins</h1>
+    <p class="page-header__lead">Finds the cheapest way to earn Darkmoon Faire Prize Tickets, using the auction house prices from your own Auctionator scans.</p>
+    <div class="divider" aria-hidden="true"></div>
+  </header>
+
+  <main>
+    <section class="frame frame--dragon" aria-labelledby="loader-title">
+      <span class="frame__dragon" aria-hidden="true"></span>
+      <h2 class="frame__title" id="loader-title">Auctionator Prices</h2>
+      <div id="loader"></div>
+    </section>
+
+    <section class="frame" aria-labelledby="filters-title">
+      <h2 class="frame__title" id="filters-title">Your Character</h2>
+      <div id="filters"></div>
+    </section>
+
+    <section class="frame" aria-labelledby="results-title">
+      <h2 class="frame__title" id="results-title">Cheapest Turn-ins</h2>
+      <p class="frame__note">Sorted by total cost to reach your goal. Quests you are too low level for are hidden.</p>
+      <div id="results"></div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    Prices are Auctionator's last seen minimum buyout. WoW saves them when you log out or type <code>/reload</code>.
+  </footer>
+</div>
+
+<script src="dmf.js" defer></script>
+<script src="components/money.js" defer></script>
+<script src="components/wowhead.js" defer></script>
+<script src="components/file-loader.js" defer></script>
+<script src="components/filters.js" defer></script>
+<script src="components/results-table.js" defer></script>
+<script src="app.js" defer></script>
+
+<!-- Wowhead in-game style item tooltips on hover. It picks up the /forever/item= links in the results table.
+     Config keeps our own link colours, names and icons untouched. -->
+<script>const whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>
+<script src="https://wow.zamimg.com/js/tooltips.js" async></script>
+</body>
+</html>
