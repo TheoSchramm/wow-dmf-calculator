@@ -69,6 +69,9 @@ const STANDINGS = [
 // Sources: warcrafttavern.com/forever/guides/darkmoon-faire, zockify.com/classic/events/darkmoon-faire,
 // wowpedia.fandom.com/wiki/Darkmoon_Faire_(Classic).
 const REP_PER_QUEST = 250, REP_CAP = [500, 1100, 1700, 2500, 3000 + 5999];
+// Reputation bonuses add up (Human racial Diplomacy +10%, Legacy talent Diplomat +2% per rank, 5 ranks).
+const REP_BONUS = {human: 0.10, diplomatPerRank: 0.02, diplomatMaxRanks: 5};
+function repPerQuest(bonus = 0) { return Math.round(REP_PER_QUEST * (1 + (+bonus || 0))); }
 const TIER_UNLIMITED = 5;   // tier whose turn-ins never stop
 
 function repFromStanding(standingName, value) {
@@ -80,10 +83,10 @@ function repText(rep) {
   return s.name === "Exalted" ? "Exalted" : `${s.name} ${rep - s.base}/${s.size}`;
 }
 // How many turn-ins of this tier are still offered, starting at `rep` and doing only this tier.
-function turnInsLeft(tier, rep) {
+function turnInsLeft(tier, rep, bonus = 0) {
   if (tier === TIER_UNLIMITED) return Infinity;
   const cap = REP_CAP[tier - 1];
-  return rep >= cap ? 0 : Math.ceil((cap - rep) / REP_PER_QUEST);
+  return rep >= cap ? 0 : Math.ceil((cap - rep) / repPerQuest(bonus));
 }
 // Prize ticket rewards (sold by Gelvas Grimegate through "N Tickets - ..." quests), cheapest first.
 // key is used by the CLI's --target. Costs: warcrafttavern.com/forever/guides/darkmoon-faire; IDs: Wowhead Forever data.
@@ -188,10 +191,10 @@ function applyPrices(items, prices) {   // prices: {itemId: copper}; returns cou
 }
 // One row per item (single-item view, used by the CLI and the page's reference table).
 // untilCap / turnInsLeft: turn-ins still offered from `rep` before the tier's reputation cap.
-function calculate(items, {tickets = 0, target = 50, rep = 0, strict = false, category = "", level = MAX_LEVEL} = {}) {
+function calculate(items, {tickets = 0, target = 50, rep = 0, strict = false, category = "", level = MAX_LEVEL, repBonus = 0} = {}) {
   let rows = items.filter(i => (!category || i.category.toLowerCase() === category.toLowerCase()) && i.minLevel <= level).map(i => {
     const tv = TICKET_VALUE[i.tier - 1], quests = Math.max(0, Math.ceil((target - tickets) / tv));
-    const untilCap = turnInsLeft(i.tier, rep);
+    const untilCap = turnInsLeft(i.tier, rep, repBonus);
     const priced = i.price != null;
     return {...i, quests, untilCap, turnInsLeft: untilCap, overCap: quests > untilCap, items: quests * i.qnt,
             ticketValue: tv, ticketsGained: quests * tv,
@@ -206,13 +209,14 @@ function calculate(items, {tickets = 0, target = 50, rep = 0, strict = false, ca
 }
 
 // Cheapest route to `target` tickets, respecting reputation caps.
-// Every turn-in adds REP_PER_QUEST reputation and a tier is only offered below its cap, and caps rise with
+// Every turn-in adds repPerQuest(repBonus) reputation and a tier is only offered below its cap, and caps rise with
 // the tier, so lower tiers always go first. Within a tier all items give the same tickets and share the cap,
 // so only the cheapest eligible item per tier matters. We try every count for tiers 1-4 (each is at most
 // ~11 because of the caps) and fill the rest with tier 5, which never runs out.
 // Returns {ok, steps: [{item, turnIns, items, cost, ticketsAfter, repBefore, repAfter}], cost (gold),
 //          tickets, repEnd, reason, maxTickets}.
-function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL} = {}) {
+function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL, repBonus = 0} = {}) {
+  const rq = repPerQuest(repBonus);
   const need = Math.max(0, target - tickets);
   if (need === 0) return {ok: true, steps: [], cost: 0, tickets, repEnd: rep};
 
@@ -225,7 +229,7 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL}
   const perTurn = t => best[t].qnt * best[t].price;   // silver
 
   let winner = null;
-  const maxK = t => best[t] ? Math.min(turnInsLeft(t + 1, rep), Math.ceil(need / TICKET_VALUE[t])) : 0;
+  const maxK = t => best[t] ? Math.min(turnInsLeft(t + 1, rep, repBonus), Math.ceil(need / TICKET_VALUE[t])) : 0;
   const ranges = [0, 1, 2, 3].map(maxK);
   let maxTickets = 0;
   for (let k1 = 0; k1 <= ranges[0]; k1++)
@@ -236,7 +240,7 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL}
     // feasible if the last turn-in of each used tier still starts below that tier's cap
     let done = 0, ok = true;
     for (let t = 0; t < 4 && ok; t++) {
-      if (ks[t] && rep + REP_PER_QUEST * (done + ks[t] - 1) >= REP_CAP[t]) ok = false;
+      if (ks[t] && rep + rq * (done + ks[t] - 1) >= REP_CAP[t]) ok = false;
       done += ks[t];
     }
     if (!ok) continue;
@@ -269,14 +273,14 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL}
     const it = best[i];
     const repBefore = r;
     // tier 5 stops giving reputation at its cap ("More ..." quests give none)
-    r = i + 1 === TIER_UNLIMITED ? Math.max(r, Math.min(REP_CAP[i], r + k * REP_PER_QUEST)) : r + k * REP_PER_QUEST;
+    r = i + 1 === TIER_UNLIMITED ? Math.max(r, Math.min(REP_CAP[i], r + k * rq)) : r + k * rq;
     t += k * TICKET_VALUE[i];
-    steps.push({item: it, turnIns: k, items: k * it.qnt, cost: k * perTurn(i) / 100, ticketsAfter: t, repBefore, repAfter: r});
+    steps.push({item: it, turnIns: k, items: k * it.qnt, cost: k * perTurn(i) / 100, ticketsAfter: t, repBefore, repAfter: r, repPer: rq});
   });
   return {ok: true, steps, cost: winner.cost / 100, tickets: t, repEnd: r};
 }
 
-const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
+const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, REP_BONUS, repPerQuest, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
   WOWHEAD_ITEM_URL, WOWHEAD_QUEST_URL, WOWHEAD_NPC_URL, ICON_URL,
   parseAuctionator, realmPrices, applyPrices, calculate, planRoute, turnInsLeft, repFromStanding, repText};
 if (typeof module !== "undefined") module.exports = DMF; else globalThis.DMF = DMF;

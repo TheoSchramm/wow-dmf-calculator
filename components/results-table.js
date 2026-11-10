@@ -13,7 +13,7 @@
     if (q.length < 2) return q;
     const cap = DMF.REP_CAP[step.item.tier - 1];
     if (step.repBefore >= cap) return [q[1]];
-    return step.repBefore + step.turnIns * DMF.REP_PER_QUEST > cap ? q : [q[0]];
+    return step.repBefore + step.turnIns * step.repPer > cap ? q : [q[0]];
   }
 
   function routeHtml(plan, goal, needed) {

@@ -31,7 +31,7 @@
 
   function render() {
     const v = filters.values();
-    const opts = {target: v.target, tickets: v.tickets, level: v.level, rep: v.rep};
+    const opts = {target: v.target, tickets: v.tickets, level: v.level, rep: v.rep, repBonus: v.repBonus};
     const rows = DMF.calculate(ITEMS, opts);          // reference list (one row per item)
     const plan = DMF.planRoute(ITEMS, opts);          // cheapest route respecting reputation caps
     table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level});
