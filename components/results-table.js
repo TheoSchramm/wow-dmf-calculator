@@ -60,7 +60,7 @@
         } else if (best) {
           summary.innerHTML = `Cheapest way: buy <strong>${best.items} &times; ${wowhead.itemLink(best)}</strong>
             for about ${UI.money(best.total * 10000)}, then turn them in to <strong>${esc(best.npc)}</strong>
-            ${best.quests} time${best.quests === 1 ? "" : "s"} for ${needed} more ticket${needed === 1 ? "" : "s"}.`;
+            ${best.quests} time${best.quests === 1 ? "" : "s"} for ${wowhead.tickets(needed)} more.`;
         } else {
           summary.textContent = "None of these items has a price in your Auctionator file yet. Search for them at the auction house, then /reload.";
         }

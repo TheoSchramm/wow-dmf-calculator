@@ -12,18 +12,10 @@
   UI.filters = function filters(root, {goals, defaultGoal, maxLevel, onChange}) {
     root.innerHTML = `
       <div class="filters">
-        <label class="field filters__goal">
-          <span class="field__label">Reward you want</span>
-          <select class="select select--rich" name="goal">
-            <button type="button"><selectedcontent></selectedcontent></button>
-            ${goals.map(g => `
-            <option value="${UI.esc(g.key)}" data-quality="${g.quality}"${g.key === defaultGoal ? " selected" : ""}>
-              <img class="opt-icon" src="${UI.esc(DMF.ICON_URL(g.icon))}" alt="" onerror="this.remove()">
-              <span class="opt-name">${UI.esc(g.name)}</span>
-              <span class="opt-cost">(${g.tickets} tickets)</span>
-            </option>`).join("")}
-          </select>
-        </label>
+        <div class="field filters__goal">
+          <span class="field__label" id="goal-label">Reward you want</span>
+          <div data-ref="goal"></div>
+        </div>
         <div class="reward" data-ref="reward" aria-live="polite"></div>
         <label class="field">
           <span class="field__label">Your character level</span>
@@ -43,34 +35,33 @@
 
     const el = name => root.querySelector(`[name="${name}"]`);
     const goalByKey = Object.fromEntries(goals.map(g => [g.key, g]));
-    // Colour the closed select like the chosen item (browsers without rich options still show this).
-    const colourGoal = () => { el("goal").dataset.quality = goalByKey[el("goal").value].quality; };
-    colourGoal();
+    const goalPicker = UI.itemPicker(root.querySelector('[data-ref="goal"]'), {
+      items: goals.map(g => ({value: g.key, name: g.name, icon: g.icon, quality: g.quality, noteHtml: UI.wowhead.tickets(g.tickets)})),
+      value: defaultGoal,
+      labelId: "goal-label",
+      onChange() { renderReward(); onChange(values(), "goal"); },
+    });
 
     // Reward preview for the selected goal, like a quest reward box: icon, item link, redemption quest.
     function renderReward() {
-      const g = goalByKey[el("goal").value];
+      const g = goalByKey[goalPicker.value()];
       root.querySelector('[data-ref="reward"]').innerHTML = `
         <span class="reward__label">You will receive:</span>
         <div class="item">
           ${UI.wowhead.itemIcon(g)}
           <span class="item__name">
             <span>${UI.wowhead.itemLink(g)}</span>
-            <span class="item__meta">Costs ${g.tickets} Prize Tickets &middot; Quest: ${UI.wowhead.questLink({id: g.questId, name: `${g.tickets} Tickets - ${g.name}`})}</span>
+            <span class="item__meta">Costs ${UI.wowhead.tickets(g.tickets)} &middot; Quest: ${UI.wowhead.questLink({id: g.questId, name: `${g.tickets} Tickets - ${g.name}`})}</span>
           </span>
         </div>`;
     }
     renderReward();
 
-    root.addEventListener("input", e => {
-      if (!e.target.name) return;
-      if (e.target.name === "goal") { renderReward(); colourGoal(); }
-      onChange(values(), e.target.name);
-    });
+    root.addEventListener("input", e => e.target.name && onChange(values(), e.target.name));
     root.addEventListener("change", e => e.target.name === "realm" && onChange(values(), "realm"));
 
     function values() {
-      const goal = goalByKey[el("goal").value];
+      const goal = goalByKey[goalPicker.value()];
       return {
         goal,
         target: goal.tickets,

@@ -271,84 +271,129 @@ code {
 .select:disabled { color: var(--disabled); cursor: not-allowed; }
 .select option { background: #17171f; color: var(--highlight); }
 
-/* Reward dropdown: options show the item icon and its quality colour.
-   Uses the customizable <select> (appearance: base-select) where supported; elsewhere it is a normal
-   select whose options are just coloured text. Quality is a data attribute, not a .qN class, because
-   Wowhead's tooltip script styles option.qN:checked with !important (white background). */
-.select--rich[data-quality="1"], .select--rich option[data-quality="1"] { color: var(--q1); }
-.select--rich[data-quality="2"], .select--rich option[data-quality="2"] { color: var(--q2); }
-.select--rich[data-quality="3"], .select--rich option[data-quality="3"] { color: var(--q3); }
-.select--rich[data-quality="4"], .select--rich option[data-quality="4"] { color: var(--q4); }
+/* Item picker (components/item-picker.js): a dropdown whose options show the item icon and its
+   quality colour in every browser. Closed: an edit box (Common-Input-Border). Open: a GameTooltip box.
+   Quality is a data attribute, not a .qN class: Wowhead's tooltip script forces colours on .qN. */
+.item-picker { position: relative; }
 
-@supports (appearance: base-select) {
-  .select--rich,
-  .select--rich::picker(select) { appearance: base-select; }
-
-  .select--rich {
-    display: flex;
-    align-items: center;
-    height: 38px;
-    padding: 0 6px;
-  }
-  .select--rich > button {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-    font: inherit;
-    color: inherit;
-    background: none;
-    border: 0;
-    padding: 0;
-  }
-  .select--rich selectedcontent {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .select--rich::picker-icon { color: var(--normal); }
-
-  /* the open list: a GameTooltip-style box */
-  .select--rich::picker(select) {
-    margin-top: 2px;
-    padding: 6px;
-    max-height: 60vh;
-    background: #0c0c1c;          /* opaque, under the border too; the border image is drawn on top */
-    border: 16px solid transparent;
-    border-image: url("../assets/ui/tooltip-border.png") 16 / 16px round;
-    opacity: 1;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
-  }
-  .select--rich option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
-    font: 14px var(--font);
-    text-shadow: 1px 1px 0 #000;
-    background: none;
-    cursor: pointer;
-  }
-  .select--rich option:hover,
-  .select--rich option:focus-visible {
-    background: url("../assets/ui/row-highlight.png") center / 100% 100% no-repeat;
-    outline: none;
-  }
-  .select--rich option:checked { background-color: rgba(255, 209, 0, 0.12); }
-  .select--rich option::checkmark { color: var(--normal); }
-
-  .opt-icon {
-    flex: none;
-    width: 24px;
-    height: 24px;
-    border: 1px solid #000;
-    box-shadow: 0 0 0 1px #5b4a30;
-  }
-  .opt-cost { color: var(--muted); font-size: 13px; }
+.item-picker__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 4px;
+  font: 14px var(--font);
+  color: var(--highlight);
+  text-align: left;
+  text-shadow: 1px 1px 0 #000;
+  background: none;
+  border-style: solid;
+  border-width: 0 8px;
+  border-image: url("../assets/ui/input.png") 0 8 fill / 0 8px stretch;
+  cursor: pointer;
 }
+.item-picker__button:focus-visible { outline: none; filter: brightness(1.35); }
+
+.item-picker__current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* gold down-arrow, flips when open */
+.item-picker__arrow {
+  flex: none;
+  width: 0;
+  height: 0;
+  margin-right: 4px;
+  border: 6px solid transparent;
+  border-top-color: var(--normal);
+  border-bottom-width: 0;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+.item-picker.is-open .item-picker__arrow { transform: rotate(180deg); }
+
+.item-picker__list {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 2px;
+  list-style: none;
+  max-height: min(60vh, 440px);
+  overflow-y: auto;
+  background: #0c0c1c;
+  border: 16px solid transparent;
+  border-image: url("../assets/ui/tooltip-border.png") 16 / 16px round;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+  outline: none;
+}
+
+.item-picker__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 28px;
+  position: relative;
+  font: 14px var(--font);
+  text-shadow: 1px 1px 0 #000;
+  cursor: pointer;
+}
+.item-picker__option.is-active {
+  background: url("../assets/ui/row-highlight.png") center / 100% 100% no-repeat;
+}
+.item-picker__option[aria-selected="true"]::before {   /* UI-CheckBox-Check */
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%);
+  background: url("../assets/ui/checkbox-check.png") center / 100% no-repeat;
+}
+
+.item-picker__icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #5b4a30;
+}
+.item-picker__name { overflow: hidden; text-overflow: ellipsis; }
+.item-picker__note { flex: none; color: var(--muted); font-size: 13px; }
+
+/* "<n> [Prize Ticket icon]" (UI.wowhead.tickets) */
+.tickets {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  color: var(--highlight);
+  font-family: var(--font-number);
+}
+.tickets__icon {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000;
+  vertical-align: -3px;
+}
+
+.item-picker__button[data-quality="0"], .item-picker__option[data-quality="0"] { color: var(--q0); }
+.item-picker__button[data-quality="1"], .item-picker__option[data-quality="1"] { color: var(--q1); }
+.item-picker__button[data-quality="2"], .item-picker__option[data-quality="2"] { color: var(--q2); }
+.item-picker__button[data-quality="3"], .item-picker__option[data-quality="3"] { color: var(--q3); }
+.item-picker__button[data-quality="4"], .item-picker__option[data-quality="4"] { color: var(--q4); }
+
+/* the open list hangs below its frame, so keep that frame above the next one */
+.frame:has(.item-picker.is-open) { z-index: 5; }
 
 .input--path {
   font-family: var(--font-mono);
