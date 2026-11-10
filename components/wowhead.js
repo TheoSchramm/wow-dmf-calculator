@@ -14,7 +14,7 @@
       return `<a class="item__icon${size === "large" ? " item__icon--large" : ""}" href="${esc(DMF.WOWHEAD_ITEM_URL(item.id))}" target="_blank" rel="noopener"
           data-category="${esc(category)}" tabindex="-1" aria-hidden="true">
           ${esc(item.name[0])}
-          <img src="${esc(DMF.ICON_URL(item.icon, size))}" alt="" loading="lazy" onerror="this.remove()">
+          <img src="${esc(DMF.ICON_URL(item.icon, size))}" alt="" onerror="this.remove()">
           ${count !== "" ? `<span class="item__count">${esc(count)}</span>` : ""}
         </a>`;
     },
