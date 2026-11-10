@@ -191,7 +191,7 @@ code {
 /* UI-DialogBox-Gold-Dragon on the frame's top-left corner */
 .frame--dragon .frame__dragon {
   position: absolute;
-  top: -30px;
+  top: -12px;
   left: -30px;
   width: 128px;
   height: 128px;
@@ -756,6 +756,6 @@ code {
 
 @media (max-width: 600px) {
   .frame { padding: 44px 24px 26px; }
-  .frame--dragon .frame__dragon { width: 88px; height: 88px; top: -22px; left: -20px; }
+  .frame--dragon .frame__dragon { width: 88px; height: 88px; top: -10px; left: -20px; }
   .path-row { flex-direction: column; align-items: stretch; }
 }
