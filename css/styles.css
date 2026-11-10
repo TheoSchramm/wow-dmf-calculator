@@ -597,6 +597,25 @@ code {
   color: var(--muted);
   text-shadow: 1px 1px 0 #000;
 }
+.page-footer p { margin: 0 0 10px; }
+
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--normal);
+  text-decoration: none;
+}
+.repo-link:hover, .repo-link:focus-visible { color: var(--highlight); text-decoration: underline; }
+.repo-link__icon { flex: none; filter: drop-shadow(1px 1px 0 #000); }
+
+.page-footer .disclaimer {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--disabled);
+}
 
 /* ---------- Small screens ---------- */
 
