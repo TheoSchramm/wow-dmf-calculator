@@ -549,19 +549,69 @@ code {
   .filters__row { grid-template-columns: minmax(0, 1fr); }
 }
 .field[hidden] { display: none; }
+
+/* reputation: standing dropdown + value "/ 3000" */
+.rep-input {
+  display: grid;
+  grid-template-columns: minmax(110px, 160px) minmax(70px, 120px) auto;
+  gap: 10px;
+  align-items: center;
+}
+.rep-input .input[hidden] { display: none; }
+.rep-input__max { color: var(--body); font-family: var(--font-number); white-space: nowrap; }
 .field__hint {
   font-size: 12px;
   color: var(--muted);
   text-shadow: 1px 1px 0 #000;
 }
 
-/* one-sentence answer above the results */
+/* the route (step-by-step answer) above the results */
 .summary {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
   font-size: 15px;
   line-height: 1.6;
 }
 .summary strong { font-weight: normal; color: var(--normal); }
+.route__title { margin: 0 0 10px; }
+.route__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: grid;
+  gap: 10px;
+}
+.route__step {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px 6px 0;
+  border-top: 1px solid rgba(154, 154, 168, 0.25);
+}
+.route__step::before {                  /* step number, gold like quest objectives */
+  content: counter(step) ".";
+  flex: none;
+  width: 22px;
+  text-align: right;
+  color: var(--normal);
+  font-family: var(--font-number);
+  font-size: 16px;
+}
+.route__step--final::before { content: "\2713"; }   /* check mark for the hand-in */
+.route__text { display: grid; gap: 2px; min-width: 0; font-size: 14px; line-height: 1.45; }
+.route__qty { color: var(--normal); }
+.route__meta { font-size: 12px; color: var(--muted); }
+
+.table-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--normal);
+  text-shadow: var(--shadow);
+}
+.left-cap { display: block; font-size: 11px; color: var(--muted); font-family: var(--font); }
+.ah-table tr.is-closed td { opacity: 0.55; }
 
 /* Reward showcase, like the in-game quest reward panel: big icon, name, cost, quest, NPC */
 .reward-card { display: grid; gap: 10px; padding: 14px 16px 16px; }

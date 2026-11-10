@@ -31,9 +31,10 @@
 
   function render() {
     const v = filters.values();
-    // The web page keeps it simple: no reputation-cap modelling (the CLI still has --rep / --strict-caps).
-    const rows = DMF.calculate(ITEMS, {target: v.target, tickets: v.tickets, level: v.level});
-    table.render(rows, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms});
+    const opts = {target: v.target, tickets: v.tickets, level: v.level, rep: v.rep};
+    const rows = DMF.calculate(ITEMS, opts);          // reference list (one row per item)
+    const plan = DMF.planRoute(ITEMS, opts);          // cheapest route respecting reputation caps
+    table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level});
   }
 
   async function loadFile(file) {

@@ -62,7 +62,21 @@ Goals:`);
   const tickets = parseInt(a.tickets, 10);
   const level = parseInt(a.level, 10);
   if (!(level >= 1 && level <= DMF.MAX_LEVEL)) throw new Error(`--level must be between 1 and ${DMF.MAX_LEVEL}`);
-  const rows = DMF.calculate(items, {tickets, target, rep: parseInt(a.rep, 10), strict: !!a.strict, category: a.category || "", level});
+  const rep = parseInt(a.rep, 10) || 0;   // points from Neutral 0 (Friendly 0 = 3000)
+
+  if (file) {
+    const plan = DMF.planRoute(items, {target, tickets, rep, level});
+    if (target - tickets <= 0) console.log(`You already have enough tickets. Take them to ${DMF.TICKET_NPC.name}.\n`);
+    else if (!plan.ok) console.log(`Can't reach ${target} tickets from ${DMF.repText(rep)} at level ${level}: the most is ${plan.maxTickets} (${plan.reason}).\n`);
+    else {
+      console.log(`ROUTE (reputation caps respected, start ${DMF.repText(rep)}): ${plan.tickets} tickets for ${plan.cost.toFixed(2)}g`);
+      plan.steps.forEach((s, i) => console.log(`  ${i + 1}. Buy ${s.items} x ${s.item.name} (${s.cost.toFixed(2)}g), turn in to ${s.item.npc} ${s.turnIns}x` +
+        `  -> ${s.ticketsAfter} tickets, ${DMF.repText(s.repBefore)} -> ${DMF.repText(s.repAfter)}`));
+      console.log(`  ${plan.steps.length + 1}. Take the tickets to ${DMF.TICKET_NPC.name}.\n\nSingle-item options:`);
+    }
+  }
+
+  const rows = DMF.calculate(items, {tickets, target, rep, strict: !!a.strict, category: a.category || "", level});
   if (!rows.length) console.log(`No turn-ins available at level ${level} with these filters. Quests unlock at levels ${DMF.MIN_LEVEL.join(", ")}.`);
   for (const r of rows.slice(0, parseInt(a.limit, 10))) {
     console.log(`${r.live ? `Buying ${r.name} (${r.category}, requires level ${r.minLevel}) you will pay ${r.perTurn.toFixed(1)}s for each turn-in.`
@@ -70,7 +84,7 @@ Goals:`);
         - Turn in at: ${r.questList.map(q => `${q.name} ${DMF.WOWHEAD_QUEST_URL(q.id)}`).join(", then repeat ")}
         - You will need ${r.quests} quests (${r.items} items) to achieve +${r.ticketsGained} (${tickets + r.ticketsGained} total) tickets.${r.live ? `
         - Total price of: ${r.total.toFixed(2)}g.` : ""}${r.overCap ? `
-        - WARNING: tier ${r.tier} reputation caps after ${r.untilCap} quests (need ${r.quests}); check if turn-ins past the cap still give tickets.` : ""}
+        - Only ${r.untilCap} turn-ins left before the quest closes at ${DMF.repText(DMF.REP_CAP[r.tier - 1])}; this item alone can't get you there.` : ""}
 `);
   }
 }

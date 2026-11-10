@@ -25,11 +25,16 @@ The file is parsed entirely in your browser and is never uploaded.
 The page has three steps:
 
 1. **Load your prices**: your `Auctionator.lua` (scan the auction house in game first, then `/reload`).
-2. **Choose your reward**: the prize you want, your character level and any tickets you already have.
-3. **Buy and turn in**: one sentence with the cheapest option, then every option cheapest first, with
-   the price of each item, how many to buy, how many times to turn in, the total cost and the NPC to visit.
+2. **Choose your reward**: the prize you want, your character level, any tickets you already have and your
+   Darkmoon Faire reputation (default Neutral 0).
+3. **Buy and turn in**: the cheapest **route**, step by step: what to buy, which NPC to hand it to and how many
+   times, with your tickets and reputation after each step. Below it, every turn-in with its price, cost per
+   ticket and how many turn-ins are left before its reputation limit.
 
-The page keeps it simple and ignores reputation caps; the command line can take them into account.
+The route respects reputation limits: each turn-in gives 250 Darkmoon Faire reputation, and the quests of
+tiers 1-4 stop being offered at Neutral 500 / 1100 / 1700 / 2500, so the cheap low tiers can only be used a few
+times and must come first. Tier 5 never closes (after Friendly 5999 its "More ..." quest gives tickets without
+reputation).
 
 ## Command line
 
@@ -40,7 +45,9 @@ node cli.js --target greater --tickets 10 --category Engineering --limit 5
 ```
 
 Options: `--level`, `--tickets`, `--target` (a number or reward key: flower, minor, monthmutton, lesser, greater,
-tonk, box, mutton, amulet, orb; default 50), `--rep`, `--strict-caps`, `--category`, `--limit`, `--realm`, `--file`.
+tonk, box, mutton, amulet, orb; default 50), `--rep` (Darkmoon Faire reputation in points from Neutral 0, so
+Friendly 0 = 3000), `--strict-caps`, `--category`, `--limit`, `--realm`, `--file`.
+With a price file it prints the cheapest route first (same planner as the website), then single-item options.
 `--help` lists every reward with its ticket cost and Wowhead link.
 It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the Classic `_forever_` WTF path).
 
@@ -58,7 +65,7 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
     gold dragon's tail so it doesn't reach into the frame.
     The art belongs to Blizzard Entertainment; this is a non-commercial fan tool.
   - `components/`: one file per UI piece, each a plain script that registers on `window.UI`
-    (`money.js`, `file-loader.js`, `filters.js`, `results-table.js`). Plain scripts rather than ES modules,
+    (`money.js`, `wowhead.js`, `item-picker.js`, `file-loader.js`, `filters.js`, `results-table.js`). Plain scripts rather than ES modules,
     so `index.html` still works when opened straight from disk.
   - `app.js`: wires `dmf.js` to the components.
 - `serve.js` only serves published files; add new top-level files to its `PUBLIC` list
@@ -75,10 +82,11 @@ It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the
   Item and quest IDs come from Wowhead's Forever data.
 
 - Quest quantities, tiers, ticket values and reputation caps come from the
-  [Warcraft Tavern DMF guide](https://www.warcrafttavern.com/forever/guides/darkmoon-faire/).
-  Each quest gives 250 reputation and each tier caps at 500/1100/1700/2500/5999. It's unverified
-  whether turn-ins past a cap still give tickets, so the command line flags over-cap routes (or excludes
-  them with `--strict-caps`, given your `--rep`) rather than assuming. The website does not use caps.
+  [Warcraft Tavern DMF guide](https://www.warcrafttavern.com/forever/guides/darkmoon-faire/)
+  (250 reputation per quest; caps 500/1100/1700/2500 Neutral and Friendly 5999 for tier 5), with the tier-5
+  "More ..." behaviour from [Wowpedia](https://wowpedia.fandom.com/wiki/Darkmoon_Faire_(Classic)).
+  [wowcalc](https://wowcalc.net/en/forever/wiki/reputations/darkmoon-faire) lists +100 for some quests using
+  Classic data it says is unconfirmed for Forever; `REP_PER_QUEST` / `REP_CAP` in `dmf.js` are easy to change.
 - Tier 5 Animal Parts: Evil Bat Eyes (quest 7903) and Glowing Scorpid Blood (quest 8222) are separate
   quests, so they're separate options.
 
