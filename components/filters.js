@@ -40,7 +40,7 @@
               <input class="input" name="repValue" type="text" data-digits maxlength="5" value="0" inputmode="numeric" autocomplete="off" aria-labelledby="rep-label">
               <span class="rep-input__max" data-ref="rep-max">/ 3000</span>
             </div>
-            <span class="field__hint">In game: Reputation tab (U). Each turn-in quest stops being offered once your reputation passes its limit.</span>
+            <span class="field__hint">Check it in game: Reputation tab (U). Quests close once you pass their limit.</span>
           </div>
           <div class="sep" aria-hidden="true"></div>
           <div class="field">

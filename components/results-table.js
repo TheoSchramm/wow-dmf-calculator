@@ -57,7 +57,7 @@
     + pair(`Requires: ${s.item.qnt}x ${wowhead.itemLink(s.item)}`, `Rewards: ${tix(DMF.TICKET_VALUE[s.item.tier - 1])}`);
   const afterSection = s =>
     line(`You now have: ${tix(s.ticketsAfter)}`)
-    + line(`${wowhead.factionLink("Reputation")}: ${esc(DMF.repText(s.repBefore))} -&gt; ${esc(DMF.repText(s.repAfter))}`);
+    + line(`${wowhead.factionLink("Reputation")}: ${rank(DMF.repText(s.repBefore))} -&gt; ${rank(DMF.repText(s.repAfter))}`);
   const othersHtml = s => s.item.farm && s.item.farm.others.length
     ? `<div class="route__meta">Also drops it:${s.item.farm.others.map(m => `<br>${mobLink(m)} (${esc(m.zone)}, ${levels(m)}, ${pct(m.chance)})`).join("")}</div>` : "";
 
@@ -120,6 +120,9 @@
       </div>`;
   }
 
+  // "Friendly 5999/6000" -> the standing name in purple
+  const rank = t => esc(t).replace(/^([A-Za-z]+)/, '<span class="rep-rank">$1</span>');
+
   const money = (v, unit) => v == null ? '<span class="no-price">No price</span>' : UI.money(v * unit);
 
   // reputation one turn-in gives; tier 5 gives it only up to the next rank, then its "More ..." quest gives none
@@ -127,13 +130,13 @@
     const gain = `+${DMF.repPerQuest(repBonus)}`;
     if (r.tier !== 5) return gain;
     const next = DMF.repText(DMF.REP_CAP[4] + 1).split(" ")[0];   // Friendly 5999/6000 is the last point before this rank
-    return `${gain}<span class="left-cap rep-note" title="Gives reputation until ${esc(DMF.repText(DMF.REP_CAP[4]))}. After that the &quot;More ...&quot; quest gives tickets but no reputation.">until ${esc(next)}</span>`;
+    return `${gain}<span class="left-cap rep-note" title="Gives reputation until ${esc(DMF.repText(DMF.REP_CAP[4]))}. After that the &quot;More ...&quot; quest gives tickets but no reputation.">until ${rank(next)}</span>`;
   }
 
   function leftCell(r) {
     if (r.turnInsLeft === Infinity) return '<span title="Never closes: after Friendly 5999 the &quot;More ...&quot; quest keeps giving tickets">No limit</span>';
     const cap = DMF.repText(DMF.REP_CAP[r.tier - 1]);
-    return `<span title="The quest is offered until your reputation reaches ${esc(cap)}">${r.turnInsLeft}</span><span class="left-cap">closes at ${esc(cap)}</span>`;
+    return `<span title="The quest is offered until your reputation reaches ${esc(cap)}">${r.turnInsLeft}</span><span class="left-cap">closes at ${rank(cap)}</span>`;
   }
 
   // Self-found reference table cell: best mob.

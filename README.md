@@ -15,34 +15,29 @@ Hover any item or quest for its in-game tooltip (from Wowhead):
 
 ![Wowhead in-game tooltip shown when hovering an item](docs/screenshots/tooltip.png)
 
-## Web version (GitHub Pages)
+## Web version
 
-Open the [website](https://theoschramm.github.io/wow-dmf-calculator/) (or a local copy of `index.html`),
-then drop in your `Auctionator.lua`:
+Open the [website](https://theoschramm.github.io/wow-dmf-calculator/) and drop in your `Auctionator.lua`
+(scan the auction house in game first, then `/reload`):
 
 ```
 World of Warcraft\_forever_\WTF\Account\<ACCOUNT>\SavedVariables\Auctionator.lua
 ```
 
-The file is parsed entirely in your browser and is never uploaded. The prices of the items this tool uses are kept in your
-browser (localStorage), so a page refresh does not need the file again; load it again to refresh the prices, or use
-"Forget saved prices" to delete them. Your choices (reward, level, tickets, reputation, realm, self-found, ticked
-professions, skills and gathering) are remembered the same way.
+The file is read in your browser and never uploaded. The prices this tool uses and your choices (reward, level,
+tickets, reputation, realm, professions) are saved in your browser, so a refresh doesn't need the file again.
+"Forget saved prices" deletes them.
 
 The page has four cards:
 
-1. **Load your prices**: your `Auctionator.lua` (scan the auction house in game first, then `/reload`).
-2. **Configure your run**: the prize you want, your character level, any tickets you already have, your Darkmoon Faire
-   reputation (default Neutral 0), self-found mode and your professions.
-3. **Get the items and turn in**: the cheapest **route**, step by step: which quest to complete, what it needs and gives,
-   how to get the items, with your tickets and reputation after each step.
-4. **All turn-ins**: every turn-in with its price, cost per ticket and how many
-   turn-ins are left before its reputation limit.
+1. **Load your prices**
+2. **Configure your run**: reward, level, tickets you have, reputation, self-found mode, professions.
+3. **Get the items and turn in**: the cheapest route, step by step.
+4. **All turn-ins**: every turn-in with its price, cost per ticket, reputation and turn-ins left.
 
-The route respects reputation limits: each turn-in gives 250 Darkmoon Faire reputation, and the quests of
-tiers 1-4 stop being offered at Neutral 500 / 1100 / 1700 / 2500, so the cheap low tiers can only be used a few
-times and must come first. Tier 5 never closes (after Friendly 5999 its "More ..." quest gives tickets without
-reputation).
+Each turn-in gives 250 reputation, and tier 1-4 quests close at Neutral 500 / 1100 / 1700 / 2500, so the cheap
+tiers can only be used a few times and come first. Tier 5 never closes, but after Friendly 5999 it gives tickets
+without reputation.
 
 ## Command line
 
@@ -52,88 +47,51 @@ Needs [Node.js](https://nodejs.org) 16+. No dependencies.
 node cli.js --target greater --tickets 10 --category Engineering --limit 5
 ```
 
-Options: `--level`, `--tickets`, `--target` (a number or reward key: flower, minor, monthmutton, lesser, greater,
-tonk, box, mutton, amulet, orb; default 50), `--rep` (Darkmoon Faire reputation in points from Neutral 0, so
-Friendly 0 = 3000), `--strict-caps`, `--category`, `--limit`, `--realm`, `--file`.
-With a price file it prints the cheapest route first (same planner as the website), then single-item options.
-`--help` lists every reward with its ticket cost and Wowhead link.
-`--ssf` is the self-found mode (see below): no price file, it plans by kills instead of gold.
-It finds the newest `Auctionator.lua` under `WOW_ROOT` (env var; defaults to the Classic `_forever_` WTF path).
+Options: `--level`, `--tickets`, `--target` (a number or reward key), `--rep` (points from Neutral 0, so Friendly 0 =
+3000), `--prof`, `--gather`, `--ssf`, `--strict-caps`, `--category`, `--limit`, `--realm`, `--file`.
+`--help` lists every reward with its ticket cost. Without `--file` it uses the newest `Auctionator.lua` under
+`WOW_ROOT`.
 
-## Crafting your own turn-ins
+## Crafting
 
-Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in step 2, or pass
-`--prof Engineering:260,Leatherworking` to the CLI (`:skill` is optional, default 300). For those turn-ins the price becomes the cheaper of the auction
-price and the price of the materials, taken from the same Auctionator file, and the route says "Craft ..." with the
-materials to gather. Every material needs an Auctionator price, except the ones a vendor sells (Coarse Thread, Fine Thread, Green Dye, Heavy
-Silken Thread): those cost the lower of the auction price and the vendor price, and the route marks them "(vendor)".
-Anything else without a price shows as "Materials not priced".
+Tick your professions in step 2 (CLI: `--prof Engineering:260,Leatherworking`; skill defaults to 300). A turn-in then
+costs the cheaper of its auction price and its materials, and the route says "Craft ...". Vendor-sold materials use
+the lower of the auction and vendor price. Anything without a price shows "Materials not priced". Recipes needing more
+skill than you have are skipped (skill values come from wiki.gg Classic, not confirmed for Forever).
 
-Under each profession you can also tick its gathering counterpart: Mining (Blacksmithing, Engineering) or Skinning
-(Leatherworking). A bar is then priced as the cheaper of its auction price and the ore you would smelt (Bronze from
-Copper + Tin, two bars per smelt); a Cured Light Hide from Light Hide + Salt. The route shows "(smelt from 6 x Iron Ore)".
-The ore still needs an Auctionator price. Stone and the other leathers have no raw form, so they are priced as before,
-and gathering skill is not checked. In the CLI use `--gather Mining,Skinning`. Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
-needs come from wiki.gg's Classic values, not confirmed for Forever). Materials are priced as they
-are (a Solid Grinding Stone or Heavy Leather is not broken down further). Recipes come from Wowhead Forever;
-`node tools/build-recipes.js` regenerates them in `dmf.js`.
+Tick the gathering counterpart (Mining for Blacksmithing and Engineering, Skinning for Leatherworking; CLI:
+`--gather Mining,Skinning`) and bars are priced as the cheaper of the auction price and smelting the ore (Cured Light
+Hide from Light Hide + Salt). The ore still needs an Auctionator price.
 
-## Self-found mode (no auction house)
+## Self-found mode
 
-Tick "Self-found" in step 2 of the page (or pass `--ssf` to the CLI) to farm the items instead of buying them.
-The planner then minimises expected kills rather than gold, picking for each step the mob with the best drop
-chance that you can fight at your level (up to 2 levels above you), and lists the next best mobs too.
-Only the Animal Parts drop from mobs; the Blacksmithing, Engineering and Leatherworking turn-ins are crafted,
-so they are left out. Drop chances are looted / times the mob was looted in Wowhead Forever's data, for normal
-open-world mobs only (no elites, rares, dungeons, raids or battlegrounds, and at least 100 recorded loots).
-It is not time-aware: it doesn't know how dense a mob's spawns are, only how often it drops the item.
+Tick "Self-found" (CLI: `--ssf`) to farm instead of buying. The planner minimises expected kills, picking the best
+drop chance among mobs up to 2 levels above you. Only Animal Parts drop from mobs, so crafted turn-ins are left out.
+Drop chances come from Wowhead Forever's data (normal open-world mobs, at least 100 recorded loots).
 
-To refresh the data, install `tools/wowhead-drops.user.js` in Tampermonkey, open each of the six Animal Parts item
-pages on Wowhead Forever, click "Save drops", then "Copy all" and save the JSON as `tools/results.json`.
-`node tools/build-drops.js` rewrites the `DROPS` block in `dmf.js` from it.
+To refresh the data, install `tools/wowhead-drops.user.js` in Tampermonkey, open the six Animal Parts item pages on
+Wowhead Forever, click "Save drops", then "Copy all" and save the JSON as `tools/results.json`. Then run
+`node tools/build-drops.js`. Recipes are regenerated with `node tools/build-recipes.js`.
 
 ## Code layout
 
-- `dmf.js` is the single source of truth: item data, level requirements, Auctionator parsing and the ranking maths.
-- `index.html` (web UI) and `cli.js` (terminal) are thin front-ends over it. Edit items or rules in `dmf.js` only.
-- Web UI:
-  - `index.html`: page skeleton (frames and mount points only).
-  - `css/styles.css`: all styling. It only places real WoW Classic UI textures (dialog frames, red panel
-    buttons, edit boxes, check boxes, item slots, auction rows, highlights, coins) from `assets/ui/`.
-  - `assets/ui/`: those textures, built by `python tools/build-ui-textures.py` (needs Pillow) from
-    [Gethe/wow-ui-textures](https://github.com/Gethe/wow-ui-textures) (`classic` branch). The script only
-    crops them, rearranges border "edge files" into 9-slice images for CSS `border-image`, and removes the
-    gold dragon's tail so it doesn't reach into the frame.
-    The art belongs to Blizzard Entertainment; this is a non-commercial fan tool.
-  - `components/`: one file per UI piece, each a plain script that registers on `window.UI`
-    (`money.js`, `wowhead.js`, `item-picker.js`, `file-loader.js`, `filters.js`, `results-table.js`). Plain scripts rather than ES modules,
-    so `index.html` still works when opened straight from disk.
-  - `app.js`: wires `dmf.js` to the components.
-- `serve.js` only serves published files; add new top-level files to its `PUBLIC` list
-  (files in `css/`, `components/` and `assets/ui/` are allowed automatically).
+- `dmf.js`: single source of truth (data, Auctionator parsing, maths), shared by the site and the CLI.
+- `index.html`, `app.js`, `components/`, `css/`: the web UI, as plain scripts (works from `file://`).
+- `cli.js`: the terminal front-end. `serve.js`: local server for the published files.
+- `assets/ui/`: WoW Classic UI textures from [Gethe/wow-ui-textures](https://github.com/Gethe/wow-ui-textures),
+  built by `python tools/build-ui-textures.py` (needs Pillow). The art belongs to Blizzard Entertainment; this is a
+  non-commercial fan tool.
 
 ## Notes
 
-- Prices are Auctionator's last seen minimum, so they're as fresh as your last in-game
-  scan plus a `/reload` or logout (that's when WoW writes the file).
-- There are no built-in prices. Items Auctionator has no price for are listed last as "No AH price",
-  still showing the quests and items needed.
-- Each turn-in item links its Wowhead quest(s); tier 5 has a first-time quest plus a repeatable "More ..." quest.
-  Each goal is a real reward item, linked with the "N Tickets - ..." quest that redeems it.
-  Item and quest IDs come from Wowhead's Forever data.
-
+- Prices are Auctionator's last seen minimum, as fresh as your last in-game scan plus a `/reload`.
 - Quest quantities, tiers, ticket values and reputation caps come from the
-  [Warcraft Tavern DMF guide](https://www.warcrafttavern.com/forever/guides/darkmoon-faire/)
-  (250 reputation per quest; caps 500/1100/1700/2500 Neutral and Friendly 5999 for tier 5), with the tier-5
-  "More ..." behaviour from [Wowpedia](https://wowpedia.fandom.com/wiki/Darkmoon_Faire_(Classic)).
-  [wowcalc](https://wowcalc.net/en/forever/wiki/reputations/darkmoon-faire) lists +100 for some quests using
-  Classic data it says is unconfirmed for Forever; `REP_PER_QUEST` / `REP_CAP` in `dmf.js` are easy to change.
-- Tier 5 Animal Parts: Evil Bat Eyes (quest 7903) and Glowing Scorpid Blood (quest 8222) are separate
-  quests, so they're separate options.
+  [Warcraft Tavern DMF guide](https://www.warcrafttavern.com/forever/guides/darkmoon-faire/) and
+  [Wowpedia](https://wowpedia.fandom.com/wiki/Darkmoon_Faire_(Classic)). Reputation per quest is not fully verified
+  for Forever; `REP_PER_QUEST` / `REP_CAP` in `dmf.js` are easy to change.
+- Item, quest and recipe IDs come from Wowhead's Forever data.
 
 ## Publishing
 
-The site is deployed to https://theoschramm.github.io/wow-dmf-calculator/ by GitHub Actions
-(`.github/workflows/pages.yml`) on every push to `main`; it can also be run by hand from the Actions tab.
-Only the site files are published (`index.html`, `app.js`, `dmf.js`, `css/`, `components/`, `assets/`).
-Pages source must be set to "GitHub Actions" (Settings > Pages).
+GitHub Actions deploys the site on every push to `main` (`.github/workflows/pages.yml`). Pages source must be
+"GitHub Actions".

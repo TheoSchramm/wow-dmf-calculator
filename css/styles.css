@@ -915,3 +915,5 @@ code {
 .faction-link:hover, .faction-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
 .spell-link { color: var(--normal); }
 .spell-link:hover, .spell-link:focus-visible { text-decoration-style: solid; color: var(--highlight); }
+
+.rep-rank { color: #a335ee; font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; }   /* Friz Quadrata draws a lowercase u like a capital */
