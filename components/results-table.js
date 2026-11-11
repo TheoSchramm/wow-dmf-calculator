@@ -24,7 +24,7 @@
 
   // First line of a step: buy it (auction house prices) or farm it (self-found, fewest kills).
   function stepAction(s, ssf) {
-    const turnIn = `then turn them in to ${wowhead.npcLink(npcOf(s.item))} <span class="route__qty">${plural(s.turnIns, "time")}</span> (${s.item.qnt} per turn-in).`;
+    const turnIn = `then turn them in to ${wowhead.npcLink(npcOf(s.item))} <span class="route__qty">${plural(s.turnIns, "time")}</span> (each turn-in takes ${s.item.qnt} and gives ${wowhead.tickets(DMF.TICKET_VALUE[s.item.tier - 1])}).`;
     if (!ssf && s.via === "craft") {
       const c = s.craft, mats = c.mats.map(m => `<span class="route__qty">${m.qty} &times;</span> ${wowhead.itemLink(m)}${m.vendor ? " (vendor)" : ""}`).join(", ");
       const ah = s.ahPrice != null ? ` instead of about ${UI.money(s.ahPrice * s.items * 100)} at the auction house` : "";
@@ -99,7 +99,7 @@
         ${wowhead.itemIcon(r, {category: r.category})}
         <span class="item__name">
           <span>${wowhead.itemLink(r)}${tags.join("")}</span>
-          <span class="item__meta"><span class="item__qty">${r.qnt}</span> per turn-in to ${wowhead.npcLink(npcOf(r))}</span>
+          <span class="item__meta">Turn in <span class="item__qty">${r.qnt}</span> for ${wowhead.tickets(DMF.TICKET_VALUE[r.tier - 1])} to ${wowhead.npcLink(npcOf(r))}</span>
           <span class="item__quests">${r.questList.map(q => `<span>${wowhead.questLink(q)}</span>`).join("")}</span>
         </span>
       </div>`;
