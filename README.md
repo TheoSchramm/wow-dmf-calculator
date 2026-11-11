@@ -24,16 +24,20 @@ then drop in your `Auctionator.lua`:
 World of Warcraft\_forever_\WTF\Account\<ACCOUNT>\SavedVariables\Auctionator.lua
 ```
 
-The file is parsed entirely in your browser and is never uploaded.
+The file is parsed entirely in your browser and is never uploaded. The prices of the items this tool uses are kept in your
+browser (localStorage), so a page refresh does not need the file again; load it again to refresh the prices, or use
+"Forget saved prices" to delete them. Your choices (reward, level, tickets, reputation, realm, self-found, ticked
+professions, skills and gathering) are remembered the same way.
 
-The page has three steps:
+The page has four cards:
 
 1. **Load your prices**: your `Auctionator.lua` (scan the auction house in game first, then `/reload`).
-2. **Choose your reward**: the prize you want, your character level, any tickets you already have and your
-   Darkmoon Faire reputation (default Neutral 0).
-3. **Buy and turn in**: the cheapest **route**, step by step: what to buy, which NPC to hand it to and how many
-   times, with your tickets and reputation after each step. Below it, every turn-in with its price, cost per
-   ticket and how many turn-ins are left before its reputation limit.
+2. **Configure your run**: the prize you want, your character level, any tickets you already have, your Darkmoon Faire
+   reputation (default Neutral 0), self-found mode and your professions.
+3. **Get the items and turn in**: the cheapest **route**, step by step: which quest to complete, what it needs and gives,
+   how to get the items, with your tickets and reputation after each step.
+4. **All turn-ins**: every turn-in with its price, cost per ticket and how many
+   turn-ins are left before its reputation limit.
 
 The route respects reputation limits: each turn-in gives 250 Darkmoon Faire reputation, and the quests of
 tiers 1-4 stop being offered at Neutral 500 / 1100 / 1700 / 2500, so the cheap low tiers can only be used a few
@@ -63,7 +67,13 @@ Tick the professions you have (Blacksmithing, Engineering, Leatherworking) in st
 price and the price of the materials, taken from the same Auctionator file, and the route says "Craft ..." with the
 materials to gather. Every material needs an Auctionator price, except the ones a vendor sells (Coarse Thread, Fine Thread, Green Dye, Heavy
 Silken Thread): those cost the lower of the auction price and the vendor price, and the route marks them "(vendor)".
-Anything else without a price shows as "Materials not priced". Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
+Anything else without a price shows as "Materials not priced".
+
+Under each profession you can also tick its gathering counterpart: Mining (Blacksmithing, Engineering) or Skinning
+(Leatherworking). A bar is then priced as the cheaper of its auction price and the ore you would smelt (Bronze from
+Copper + Tin, two bars per smelt); a Cured Light Hide from Light Hide + Salt. The route shows "(smelt from 6 x Iron Ore)".
+The ore still needs an Auctionator price. Stone and the other leathers have no raw form, so they are priced as before,
+and gathering skill is not checked. In the CLI use `--gather Mining,Skinning`. Enter your skill level for each profession: recipes that need more are skipped and tagged "Needs skill N" (the skill
 needs come from wiki.gg's Classic values, not confirmed for Forever). Materials are priced as they
 are (a Solid Grinding Stone or Heavy Leather is not broken down further). Recipes come from Wowhead Forever;
 `node tools/build-recipes.js` regenerates them in `dmf.js`.

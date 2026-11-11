@@ -16,26 +16,46 @@
     return step.repBefore + step.turnIns * step.repPer > cap ? q : [q[0]];
   }
 
+  // One line per material; a material you make yourself lists its raw ingredients on lines under it.
+  const qtyOf = (n, x) => `<span class="route__qty">${n} &times;</span> ${wowhead.itemLink(x)}`;
+  const matIcon = x => `<img class="route__icon" src="${esc(DMF.ICON_URL(x.icon, "small"))}" alt="" width="18" height="18" onerror="this.remove()">`;
+  // a row of the materials panel: what on the left, its price in a column on the right
+  const row = (left, cost, cls = "") => `<div class="route__row ${cls}"><span>${left}</span>${cost == null ? "" : `<span class="route__price">${UI.money(cost)}</span>`}</div>`;
+  const matHtml = m => {
+    const verb = DMF.REFINE[m.id] && DMF.REFINE[m.id].by === "Skinning" ? "cure" : "smelt";
+    const from = m.refined ? m.refined.map(r => row(`${verb} from ${matIcon(r)}${qtyOf(r.qty, r)}`, r.cost, "route__row--sub")).join("") : "";
+    return row(`${matIcon(m)}${qtyOf(m.qty, m)}${m.vendor ? " (vendor)" : ""}`, m.cost) + from;
+  };
   const pct = chance => `${+(chance * 100).toFixed(chance < 0.1 ? 1 : 0)}%`;
   const levels = m => m.minLevel === m.maxLevel ? `level ${m.minLevel}` : `level ${m.minLevel}-${m.maxLevel}`;
   const kills = n => Math.round(n).toLocaleString();
   const mobLink = m => wowhead.npcLink({id: m.npcId, name: m.name});
   const zoneLink = m => wowhead.zoneLink({id: m.zoneId, name: m.zone});
 
-  // First line of a step: buy it (auction house prices) or farm it (self-found, fewest kills).
-  function stepAction(s, ssf) {
-    const turnIn = `then turn them in to ${wowhead.npcLink(npcOf(s.item))} <span class="route__qty">${plural(s.turnIns, "time")}</span> (each turn-in takes ${s.item.qnt} and gives ${wowhead.tickets(DMF.TICKET_VALUE[s.item.tier - 1])}).`;
+  // A step is three sections split by a divider: the turn-in, how to get the items, where that leaves you. One fact per line.
+  const line = html => `<div class="route__line">${html}</div>`;
+  // short facts share a line, split by a bar
+  const pair = (...parts) => line(parts.join(' <span class="route__bar">|</span> '));
+  const sep = '<div class="route__sep" role="separator"></div>';
+  const tix = n => wowhead.tickets(n);
+  function getItems(s, ssf) {
     if (!ssf && s.via === "craft") {
-      const c = s.craft, mats = c.mats.map(m => `<span class="route__qty">${m.qty} &times;</span> ${wowhead.itemLink(m)}${m.vendor ? " (vendor)" : ""}`).join(", ");
-      const ah = s.ahPrice != null ? ` instead of about ${UI.money(s.ahPrice * s.items * 100)} at the auction house` : "";
-      return `Craft <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)} (${plural(c.crafts, "craft")}${c.yield > 1 ? `, ${c.yield} per craft` : ""})
-        from ${mats} for about ${UI.money(s.cost * 10000)}${ah}, ${turnIn}`;
+      const c = s.craft;
+      return line(`Craft: ${qtyOf(s.items, s.item)} (${plural(c.crafts, "craft")}${c.yield > 1 ? `, ${c.yield} per craft` : ""})`)
+        + `<div class="route__mats">${c.mats.map(matHtml).join("")}`
+        + row("Craft total", s.cost * 10000, "route__row--total")
+        + (s.ahPrice != null ? row("Buy it instead", s.ahPrice * s.items * 100, "route__row--ah") : "") + "</div>";
     }
-    if (!ssf) return `Buy <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)} for about ${UI.money(s.cost * 10000)}, ${turnIn}`;
+    if (!ssf) return pair(`Buy: ${qtyOf(s.items, s.item)}`, `Total: ${UI.money(s.cost * 10000)}`);
     const m = s.item.farm.mob;
-    return `Kill ${mobLink(m)} in ${zoneLink(m)} (${levels(m)}, ${pct(m.chance)} drop) until you loot
-      <span class="route__qty">${s.items} &times;</span> ${wowhead.itemLink(s.item)}, about <span class="route__qty">${kills(s.cost)} kills</span>; ${turnIn}`;
+    return pair(`Kill: ${mobLink(m)}`, `${zoneLink(m)}, ${levels(m)}`, `${pct(m.chance)} drop`)
+      + pair(`Until you loot: ${qtyOf(s.items, s.item)}`, `About <span class="route__qty">${kills(s.cost)}</span> kills`);
   }
+  const turnInSection = s =>
+    line(`Complete: ${stepQuests(s).map(wowhead.questLink).join(" then ")} (${wowhead.npcLink(npcOf(s.item))}) <span class="route__qty">${s.turnIns}x</span>`)
+    + pair(`Requires: ${s.item.qnt}x ${wowhead.itemLink(s.item)}`, `Rewards: ${tix(DMF.TICKET_VALUE[s.item.tier - 1])}`);
+  const afterSection = s =>
+    pair(`You now have: ${tix(s.ticketsAfter)}`, `${wowhead.factionLink("Reputation")}: ${esc(DMF.repText(s.repBefore))} &rarr; ${esc(DMF.repText(s.repAfter))}`);
   const othersHtml = s => s.item.farm && s.item.farm.others.length
     ? `<div class="route__meta">Also drops it:${s.item.farm.others.map(m => `<br>${mobLink(m)} (${esc(m.zone)}, ${levels(m)}, ${pct(m.chance)})`).join("")}</div>` : "";
 
@@ -44,25 +64,19 @@
       <li class="route__step">
         ${wowhead.itemIcon(s.item, {category: s.item.category})}
         <div class="route__text">
-          <div>${stepAction(s, ssf)}</div>
-          <div class="route__meta">
-            ${stepQuests(s).map(wowhead.questLink).join(" then ")}
-            &middot; You now have ${wowhead.tickets(s.ticketsAfter)}
-            &middot; ${wowhead.factionLink("Reputation")} ${esc(DMF.repText(s.repBefore))} &rarr; ${esc(DMF.repText(s.repAfter))}
-          </div>
+          <div class="route__action">${turnInSection(s)}${sep}${getItems(s, ssf)}${sep}${afterSection(s)}</div>
           ${ssf ? othersHtml(s) : ""}
         </div>
       </li>`).join("");
     return `
-      <p class="route__title">${ssf ? "Fewest-kills" : "Cheapest"} route to ${wowhead.itemLink(goal)}: ${wowhead.tickets(needed)} more for about
+      <p class="route__title">${ssf ? "Fewest-kills" : "Cheapest"} route to ${matIcon(goal)}${wowhead.itemLink(goal)}: ${wowhead.tickets(needed)} more for about
         <strong>${ssf ? `${kills(plan.cost)} kills` : UI.money(plan.cost * 10000)}</strong> in ${plural(plan.steps.length, "step")}.</p>
       <ol class="route__steps">
         ${steps}
         <li class="route__step route__step--final">
           ${wowhead.itemIcon(goal)}
           <div class="route__text">
-            <div>Take your ${wowhead.tickets(plan.tickets)} to ${wowhead.npcLink(DMF.TICKET_NPC)} and get ${wowhead.itemLink(goal)}.</div>
-            <div class="route__meta">${wowhead.questLink({id: goal.questId, name: `${goal.tickets} Tickets - ${goal.name}`})}</div>
+            <div>Talk to ${wowhead.npcLink(DMF.TICKET_NPC)} to turn in ${wowhead.questLink({id: goal.questId, name: `${goal.tickets} Tickets - ${goal.name}`})} and enjoy your ${wowhead.itemLink(goal)}</div>
           </div>
         </li>
       </ol>`;
@@ -120,11 +134,11 @@
     return `${mobLink(m)}<span class="left-cap">${zoneLink(m)}, ${levels(m)}, ${pct(m.chance)} drop</span>`;
   }
 
-  UI.resultsTable = function resultsTable(root) {
-    root.innerHTML = `
-      <div class="summary tooltip" data-ref="summary" role="status" aria-live="polite"></div>
-      <h3 class="table-title">All turn-ins</h3>
-      <div class="table-wrap">
+  // root holds the route summary (card 3); tableRoot holds the reference table of every turn-in (its own card)
+  UI.resultsTable = function resultsTable(root, tableRoot) {
+    root.innerHTML = `<div class="summary tooltip" data-ref="summary" role="status" aria-live="polite"></div>`;
+    tableRoot.innerHTML = `
+      <div class="table-wrap tooltip">
         <table class="ah-table">
           <thead>
             <tr>
@@ -137,14 +151,14 @@
           <tbody></tbody>
         </table>
       </div>`;
-    const body = root.querySelector("tbody");
+    const body = tableRoot.querySelector("tbody");
     const summary = root.querySelector('[data-ref="summary"]');
 
     return {
       render(rows, plan, {goal, needed, hasPrices, level, ssf}) {
-        root.querySelector('[data-ref="h1"]').textContent = ssf ? "Best mob" : "Price each";
-        root.querySelector('[data-ref="h1"]').classList.toggle("num", !ssf);
-        root.querySelector('[data-ref="h2"]').textContent = ssf ? "Kills per ticket" : "Cost per ticket";
+        tableRoot.querySelector('[data-ref="h1"]').textContent = ssf ? "Best mob" : "Price each";
+        tableRoot.querySelector('[data-ref="h1"]').classList.toggle("num", !ssf);
+        tableRoot.querySelector('[data-ref="h2"]').textContent = ssf ? "Kills per ticket" : "Cost per ticket";
         if (needed <= 0) {
           summary.innerHTML = `You already have enough tickets for ${wowhead.itemLink(goal)}. Take them to ${wowhead.npcLink(DMF.TICKET_NPC)} at the Darkmoon Faire.`;
         } else if (!ssf && !hasPrices) {

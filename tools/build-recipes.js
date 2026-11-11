@@ -11,6 +11,12 @@ const SPELLS = {   // crafted item id -> spell id
   4363: 3926, 4375: 3942, 9313: 23068, 11590: 15255, 15994: 19791,        // Engineering
   2309: 2161, 2314: 2166, 5739: 6661, 8185: 10556, 15564: 19058,          // Leatherworking
 };
+// Refining: material id -> [spell id, gathering profession that refines it]. Smelting turns ore into bars; Skinning
+// covers curing a hide. Same tooltip format as the recipes above.
+const REFINING = {
+  2840: [2657, "Mining"], 3576: [3304, "Mining"], 2841: [2659, "Mining"], 3575: [3307, "Mining"],
+  3860: [10097, "Mining"], 12359: [16153, "Mining"], 4231: [3816, "Skinning"],
+};
 // Profession skill needed to craft each item (wiki.gg item pages, "crafted with <profession> (N)"; the Classic values,
 // not confirmed against Forever). Copper Modulator: Classic guides say 65.
 const SKILLS = {
@@ -26,8 +32,8 @@ const get = async (kind, id) => {
 };
 
 (async () => {
-  const recipes = {}, mats = {};
-  for (const [itemId, spellId] of Object.entries(SPELLS)) {
+  const recipes = {}, mats = {}, refine = {};
+  for (const [itemId, spellId] of [...Object.entries(SPELLS), ...Object.entries(REFINING).map(([i, [s]]) => [i, s])]) {
     const j = await get("spell", spellId), t = j.tooltip;
     const start = t.indexOf("Reagents:");
     if (start < 0) throw new Error(`spell ${spellId} (${j.name}) has no reagents`);
@@ -35,7 +41,8 @@ const get = async (kind, id) => {
     if (!created) throw new Error(`spell ${spellId} (${j.name}) does not make item ${itemId}`);
     const reagentHtml = t.slice(start, start + created.index);
     const list = [...reagentHtml.matchAll(/item=(\d+)[^"]*">([^<]+)<\/a>(?:&nbsp;\((\d+)\))?/g)].map(m => [+m[1], +(m[3] || 1), m[2]]);
-    recipes[itemId] = {spell: +spellId, skill: SKILLS[itemId], yield: +(created[1] || 1), name: j.name, mats: list.map(([id, q]) => [id, q])};
+    const entry = {spell: +spellId, skill: SKILLS[itemId], yield: +(created[1] || 1), name: j.name, mats: list.map(([id, q]) => [id, q])};
+    if (REFINING[itemId]) refine[itemId] = {...entry, by: REFINING[itemId][1]}; else recipes[itemId] = entry;
     for (const [id, , name] of list) mats[id] = {name};
     console.log(`${j.name}: ${list.map(([, q, n]) => `${q} ${n}`).join(", ")} -> ${created[1] || 1}`);
   }
@@ -47,8 +54,13 @@ const get = async (kind, id) => {
     const r = recipes[id];
     return `  ${id}: {spell: ${r.spell}, skill: ${r.skill}, yield: ${r.yield}, mats: ${JSON.stringify(r.mats)}},   // ${r.name}`;
   });
+  const refineRows = Object.keys(refine).map(Number).sort((a, b) => a - b).map(id => {
+    const r = refine[id];
+    return `  ${id}: {spell: ${r.spell}, by: "${r.by}", yield: ${r.yield}, mats: ${JSON.stringify(r.mats)}},   // ${r.name}`;
+  });
+  for (const r of Object.values(refine)) for (const [id] of r.mats) mats[id] = mats[id] || {};
   const matRows = Object.keys(mats).map(Number).sort((a, b) => a - b).map(id => `  ${id}: ${JSON.stringify(mats[id])},`);
-  const block = `// <recipes>\nconst RECIPES = {\n${rows.join("\n")}\n};\nconst MATS = {\n${matRows.join("\n")}\n};\n  // </recipes>`;
+  const block = `// <recipes>\nconst RECIPES = {\n${rows.join("\n")}\n};\nconst REFINE = {\n${refineRows.join("\n")}\n};\nconst MATS = {\n${matRows.join("\n")}\n};\n  // </recipes>`;
 
   const file = path.join(__dirname, "..", "dmf.js");
   const js = fs.readFileSync(file, "utf8");

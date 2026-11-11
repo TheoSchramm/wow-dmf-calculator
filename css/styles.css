@@ -152,8 +152,8 @@ code {
 .frame {
   position: relative;
   isolation: isolate;
-  margin-top: 52px;
-  padding: 46px 34px 32px;
+  margin-top: 44px;
+  padding: 40px 28px 22px;
 }
 .frame::before {               /* backdrop background, inset like the game's insets */
   content: "";
@@ -208,7 +208,7 @@ code {
 }
 
 .frame__note {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   color: var(--body);
   font-size: 13px;
   text-shadow: 1px 1px 0 #000;
@@ -408,13 +408,16 @@ code {
   cursor: copy;
 }
 
-.options { display: grid; gap: 10px; margin-top: 16px; }
+.options { display: grid; gap: 6px; margin-top: 0; }
 .professions { display: grid; gap: 2px; }
 .professions[hidden] { display: none; }
 .professions__list { display: flex; flex-wrap: wrap; gap: 4px 18px; }
-.profession { display: inline-flex; align-items: center; gap: 8px; }
+.profession { display: grid; grid-template-columns: auto auto; justify-content: start; align-items: center; gap: 4px 8px; }
 .profession__skill { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
-.profession__skill[hidden] { display: none; }
+.profession__gather { font-size: 13px; color: var(--muted); }
+.profession__gather { grid-column: 1 / -1; margin-left: 28px; }
+.profession:not(.is-on) .profession__skill, .profession:not(.is-on) .profession__gather { opacity: .5; }
+.professions__icon--small { width: 20px; height: 20px; }
 .profession__skill .input { width: 56px; text-align: center; }
 .professions__icon { width: 24px; height: 24px; border: 1px solid #000; border-radius: 3px; }
 
@@ -493,7 +496,7 @@ code {
 
 .loader {
   display: grid;
-  gap: 14px;
+  gap: 8px;
 }
 
 .drop-zone {
@@ -550,10 +553,10 @@ code {
 .filters {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
-  gap: 18px 28px;
+  gap: 12px 24px;
   align-items: start;
 }
-.filters__inputs { display: grid; gap: 16px; min-width: 0; }
+.filters__inputs { display: grid; gap: 8px; min-width: 0; }
 .filters__row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -566,6 +569,16 @@ code {
   .filters__row { grid-template-columns: minmax(0, 1fr); }
 }
 .field[hidden] { display: none; }
+
+/* divider between the sections of the load and configuration cards (UI-DialogBox-Divider, like the one under the title) */
+.sep {
+  height: 8px;
+  border-style: solid;
+  border-width: 0 8px;
+  border-image: url("../assets/ui/divider.png") 0 8 fill / 0 8px stretch;
+  opacity: .8;
+}
+.button[hidden] { display: none; }
 
 /* reputation: standing dropdown + value "/ 3000" */
 .rep-input {
@@ -584,26 +597,26 @@ code {
 
 /* the route (step-by-step answer) above the results */
 .summary {
-  margin-bottom: 18px;
+  margin-bottom: 8px;
   font-size: 15px;
   line-height: 1.6;
 }
 .summary strong { font-weight: normal; color: var(--normal); }
-.route__title { margin: 0 0 10px; }
+.route__title { margin: 0 0 6px; }
 .route__steps {
   margin: 0;
   padding: 0;
   list-style: none;
   counter-reset: step;
   display: grid;
-  gap: 10px;
+  gap: 4px;
 }
 .route__step {
   counter-increment: step;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 4px 6px 0;
+  padding: 4px 4px 4px 0;
   border-top: 1px solid rgba(154, 154, 168, 0.25);
 }
 .route__step::before {                  /* step number, gold like quest objectives */
@@ -616,8 +629,19 @@ code {
   font-size: 16px;
 }
 .route__step--final::before { content: "\2713"; }   /* check mark for the hand-in */
-.route__text { display: grid; gap: 2px; min-width: 0; font-size: 14px; line-height: 1.45; }
+.route__text { display: grid; gap: 1px; min-width: 0; font-size: 14px; line-height: 1.35; }
+.route__bar { margin: 0 6px; color: var(--muted); }
 .route__qty { color: var(--normal); }
+.route__sep { height: 1px; margin: 3px 0; background: linear-gradient(90deg, var(--normal), transparent); opacity: .8; }
+.route__icon { vertical-align: middle; margin-right: 6px; border: 1px solid #000; border-radius: 2px; }
+.route__price { margin-left: 8px; }
+.route__mats { margin: 2px 0; padding: 4px 10px; max-width: 440px; background: rgba(0, 0, 0, .3); border: 1px solid rgba(255, 209, 0, .2); border-radius: 3px; }
+.route__row { display: flex; align-items: center; gap: 12px; }
+.route__row .route__price { margin: 0 0 0 auto; }
+.route__row--sub { margin-left: 22px; font-size: 13px; color: var(--muted); }
+.route__row--total { margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255, 209, 0, .2); color: var(--normal); }
+.route__row--ah { color: var(--muted); }
+.route__sub { margin-left: 16px; font-size: 13px; color: var(--muted); }
 .route__meta { font-size: 12px; color: var(--muted); }
 
 .table-title {
@@ -661,7 +685,11 @@ code {
 
 /* ---------- Results (auction house browse list) ---------- */
 
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; padding: 12px 12px 8px; }
+.table-wrap.tooltip::after { pointer-events: none; }
+
+/* zebra rows so a long list is easier to follow */
+.ah-table tbody tr:nth-child(even):not(:hover):not(.is-best) { background-color: rgba(255, 255, 255, .03); }
 
 .ah-table {
   width: 100%;

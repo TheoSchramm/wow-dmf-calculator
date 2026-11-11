@@ -3,18 +3,19 @@
 (() => {
   const UI = (window.UI = window.UI || {});
 
-  UI.fileLoader = function fileLoader(root, {path, onFile}) {
+  UI.fileLoader = function fileLoader(root, {path, onFile, onForget}) {
     root.innerHTML = `
       <div class="loader">
         <label class="drop-zone" data-ref="drop">
           <span class="slot" aria-hidden="true"></span>
           <span class="drop-zone__text">
             <span class="drop-zone__title" data-ref="title">Drop <code>Auctionator.lua</code> here, or click to choose</span>
-            <span class="drop-zone__hint">Read in your browser only. Nothing is uploaded.</span>
+            <span class="drop-zone__hint">Read in your browser only. Nothing is uploaded. The prices are kept in this browser, so you only load it again to refresh them.</span>
           </span>
           <input data-ref="file" type="file" accept=".lua,text/plain" class="sr-only">
         </label>
 
+        <div class="sep" aria-hidden="true"></div>
         <div class="field">
           <span class="field__label">In the file dialog, paste this folder, then open your account folder and <code>SavedVariables</code></span>
           <div class="path-row">
@@ -24,7 +25,9 @@
           <p data-ref="copied" class="copy-feedback" aria-live="polite"></p>
         </div>
 
+        <div class="sep" aria-hidden="true"></div>
         <div data-ref="status" class="tooltip" role="status" aria-live="polite"></div>
+        <button data-ref="forget" type="button" class="button" hidden>Forget saved prices</button>
       </div>`;
 
     const ref = name => root.querySelector(`[data-ref="${name}"]`);
@@ -46,6 +49,7 @@
         : "Could not copy. The path is selected, press Ctrl+C.";
     };
 
+    ref("forget").onclick = () => onForget && onForget();
     const take = file => file && onFile(file);
     fileIn.onchange = () => take(fileIn.files[0]);
     drop.ondragover = e => { e.preventDefault(); drop.classList.add("is-over"); };
@@ -62,6 +66,7 @@
         status.textContent = message;
         status.className = "tooltip" + (kind ? ` tooltip--${kind}` : "");
       },
+      setSaved(saved) { ref("forget").hidden = !saved; },
       setLoaded(fileName) {
         drop.classList.toggle("is-loaded", !!fileName);
         if (fileName) ref("title").textContent = `${fileName} loaded. Drop another file to replace it.`;

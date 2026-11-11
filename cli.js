@@ -34,7 +34,7 @@ function main() {
   const a = parseArgs(process.argv.slice(2));
   if (a.help) {
     console.log(`Options: --level N (default ${DMF.MAX_LEVEL})  --tickets N  --target N|${Object.keys(GOAL_BY_KEY).join("|")} (default 50)  --rep N  --diplomat 0-5 (Legacy talent ranks)
-         --prof Blacksmithing:225,Engineering (craft those turn-ins from materials when cheaper; optional :skill, default 300)  --ssf (self-found: farm Animal Parts from mobs, no prices)  --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
+         --prof Blacksmithing:225,Engineering (craft those turn-ins from materials when cheaper; optional :skill, default 300)  --gather Mining,Skinning (also price bars from ore, hides from raw hide + salt)  --ssf (self-found: farm Animal Parts from mobs, no prices)  --strict-caps  --category NAME  --limit N  --realm NAME  --file PATH   (env WOW_ROOT sets the WTF\\Account path)
 Goals:`);
     for (const g of DMF.GOALS) console.log(`  ${g.key.padEnd(12)} ${String(g.tickets).padStart(4)} tickets  ${g.name}  ${DMF.WOWHEAD_ITEM_URL(g.id)}`);
     return;
@@ -52,6 +52,12 @@ Goals:`);
     profs[known] = Math.min(DMF.MAX_SKILL, parseInt(skill, 10) || DMF.MAX_SKILL);
   }
 
+  const gather = String(a.gather || "").split(",").map(g => g.trim()).filter(Boolean).map(g => {
+    const known = DMF.GATHERING.find(k => k.toLowerCase() === g.toLowerCase());
+    if (!known) throw new Error(`--gather: unknown profession '${g}'. Use: ${DMF.GATHERING.join(", ")}`);
+    return known;
+  });
+
   const file = a.ssf ? null : (a.file || newestAuctionator());
   if (a.ssf) console.log("Self-found mode: fewest kills, no auction house. Crafted turn-ins are left out.\n");
   else if (!file) console.log("Auctionator.lua not found; no prices, so only quests and items needed are shown.\n");
@@ -61,7 +67,7 @@ Goals:`);
     const realm = a.realm || names.sort((x, y) => realms[y].length - realms[x].length)[0];
     if (!realms[realm]) throw new Error(`Realm '${realm}' not found. Available: ${names.join(", ")}`);
     const prices = DMF.realmPrices(realms[realm]);
-    const n = DMF.applyPrices(items, prices, profs);
+    const n = DMF.applyPrices(items, prices, profs, gather);
     console.log(`Loaded ${Object.keys(prices).length} prices from realm '${realm}' (${file})`);
     console.log(`${n}/${items.length} DMF items have prices; scan the AH for the rest.\n`);
     const missing = items.filter(i => !i.live).map(i => i.name);
@@ -85,7 +91,7 @@ Goals:`);
       plan.steps.forEach((s, i) => {
         const m = ssf && s.item.farm.mob;
         const how = ssf ? `Kill ${m.name} (${m.zone}, level ${m.minLevel}${m.maxLevel > m.minLevel ? "-" + m.maxLevel : ""}, ${(m.chance * 100).toFixed(1)}% drop) for ${s.items} x ${s.item.name} (~${Math.round(s.cost)} kills)`
-                            : s.via === "craft" ? `Craft ${s.items} x ${s.item.name} (${s.craft.crafts} crafts) from ${s.craft.mats.map(m => `${m.qty} ${m.name}${m.vendor ? " (vendor)" : ""}`).join(", ")} (${s.cost.toFixed(2)}g${s.ahPrice != null ? `, AH ${(s.ahPrice * s.items / 100).toFixed(2)}g` : ""})`
+                            : s.via === "craft" ? `Craft ${s.items} x ${s.item.name} (${s.craft.crafts} crafts) from ${s.craft.mats.map(m => `${m.qty} ${m.name}${m.vendor ? " (vendor)" : ""}${m.refined ? ` (from ${m.refined.map(r => `${r.qty} ${r.name}`).join(", ")})` : ""}`).join(", ")} (${s.cost.toFixed(2)}g${s.ahPrice != null ? `, AH ${(s.ahPrice * s.items / 100).toFixed(2)}g` : ""})`
                             : `Buy ${s.items} x ${s.item.name} (${s.cost.toFixed(2)}g)`;
         console.log(`  ${i + 1}. ${how}, turn in to ${s.item.npc} ${s.turnIns}x` +
           `  -> ${s.ticketsAfter} tickets, ${DMF.repText(s.repBefore)} -> ${DMF.repText(s.repAfter)}`);

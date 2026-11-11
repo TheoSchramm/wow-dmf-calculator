@@ -9,7 +9,7 @@
     return Number.isFinite(n) && v !== "" ? n : fallback;
   };
 
-  UI.filters = function filters(root, {goals, defaultGoal, maxLevel, onChange}) {
+  UI.filters = function filters(root, {goals, defaultGoal, maxLevel, onChange, initial = {}}) {
     root.innerHTML = `
       <div class="filters">
         <div class="filters__inputs">
@@ -17,6 +17,7 @@
             <span class="field__label" id="goal-label">Reward you want</span>
             <div data-ref="goal"></div>
           </div>
+          <div class="sep" aria-hidden="true"></div>
           <div class="filters__row">
             <label class="field">
               <span class="field__label">Your character level</span>
@@ -29,6 +30,7 @@
               <span class="field__hint">Leave at 0 if you have none.</span>
             </label>
           </div>
+          <div class="sep" aria-hidden="true"></div>
           <div class="field">
             <span class="field__label" id="rep-label">Your ${UI.wowhead.factionLink()} reputation</span>
             <div class="rep-input">
@@ -40,6 +42,7 @@
             </div>
             <span class="field__hint">In game: Reputation tab (U). Each turn-in quest stops being offered once your reputation passes its limit.</span>
           </div>
+          <div class="sep" aria-hidden="true"></div>
           <div class="field">
             <span class="field__label" id="diplomat-label">Reputation bonus</span>
             <div class="diplomat">
@@ -52,6 +55,7 @@
             <span class="field__hint">Raises the reputation each turn-in gives, so lower-tier quests close sooner.</span>
           </div>
           <label class="field" data-ref="realm-field" hidden>
+            <div class="sep" aria-hidden="true"></div>
             <span class="field__label">Use prices from realm</span>
             <select class="select" name="realm"></select>
           </label>
@@ -60,6 +64,9 @@
       </div>`;
 
     const el = name => root.querySelector(`[name="${name}"]`);
+    // restore saved field values (only those that still fit their field)
+    for (const name of ["level", "tickets", "repValue"]) if (/^\d*$/.test(initial[name] ?? "x")) el(name).value = initial[name];
+    for (const name of ["standing", "diplomat"]) if ([...el(name).options].some(o => o.value === String(initial[name]))) el(name).value = initial[name];
     const goalByKey = Object.fromEntries(goals.map(g => [g.key, g]));
     const goalPicker = UI.itemPicker(root.querySelector('[data-ref="goal"]'), {
       items: goals.map(g => ({value: g.key, name: g.name, icon: g.icon, quality: g.quality, noteHtml: UI.wowhead.tickets(g.tickets)})),
@@ -121,10 +128,14 @@
 
     return {
       values,
-      setRealms(names) {
+      // the fields as typed, for saving: {goal, level, tickets, standing, repValue, diplomat, realm}
+      raw: () => ({goal: goalPicker.value(), level: el("level").value, tickets: el("tickets").value, standing: el("standing").value,
+                   repValue: el("repValue").value, diplomat: el("diplomat").value, realm: el("realm").value}),
+      setRealms(names, selected) {
         const sel = el("realm");
         sel.innerHTML = "";
         names.forEach(n => sel.add(new Option(n, n)));
+        if (names.includes(selected)) sel.value = selected;
         root.querySelector('[data-ref="realm-field"]').hidden = names.length < 2;
       },
     };

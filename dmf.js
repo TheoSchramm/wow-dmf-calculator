@@ -218,6 +218,12 @@ const MAX_SKILL = 300;
 // Source: warcraft.wiki.gg (Thread, Green Dye); Classic prices, not confirmed for Forever.
 const VENDOR_PRICE = {2320: 10, 2321: 100, 2605: 100, 8343: 2000};   // Coarse Thread, Fine Thread, Green Dye, Heavy Silken Thread
 const PROFESSIONS = ["Blacksmithing", "Engineering", "Leatherworking"];
+// Gathering professions: with Mining a player can smelt ore into bars, with Skinning cure a hide, so a material in REFINE
+// (generated below) is priced as the cheaper of buying it and making it from its own materials (ore, hide + salt).
+// Stone and the other leathers have no raw form to buy, so they stay priced at the auction. GATHER_OF: crafting
+// profession -> its gathering counterpart. Gathering skill is not checked (Mithril and Thorium need high skill).
+const GATHERING = ["Mining", "Skinning"];
+const GATHER_OF = {Blacksmithing: "Mining", Engineering: "Mining", Leatherworking: "Skinning"};
 // <recipes>
 const RECIPES = {
   2309: {spell: 2161, skill: 55, yield: 1, mats: [[2318,8],[2320,5]]},   // Embossed Leather Boots
@@ -236,7 +242,17 @@ const RECIPES = {
   15564: {spell: 19058, skill: 250, yield: 1, mats: [[8170,5]]},   // Rugged Armor Kit
   15994: {spell: 19791, skill: 260, yield: 1, mats: [[12359,3],[14047,1]]},   // Thorium Widget
 };
+const REFINE = {
+  2840: {spell: 2657, by: "Mining", yield: 1, mats: [[2770,1]]},   // Smelt Copper
+  2841: {spell: 2659, by: "Mining", yield: 2, mats: [[2840,1],[3576,1]]},   // Smelt Bronze
+  3575: {spell: 3307, by: "Mining", yield: 1, mats: [[2772,1]]},   // Smelt Iron
+  3576: {spell: 3304, by: "Mining", yield: 1, mats: [[2771,1]]},   // Smelt Tin
+  3860: {spell: 10097, by: "Mining", yield: 1, mats: [[3858,1]]},   // Smelt Mithril
+  4231: {spell: 3816, by: "Skinning", yield: 1, mats: [[783,1],[4289,1]]},   // Cured Light Hide
+  12359: {spell: 16153, by: "Mining", yield: 1, mats: [[10620,1]]},   // Smelt Thorium
+};
 const MATS = {
+  783: ["Light Hide","inv_misc_pelt_wolf_ruin_02",1],
   1210: ["Shadowgem","inv_misc_gem_amethyst_01",2],
   2318: ["Light Leather","inv_misc_leatherscrap_03",1],
   2319: ["Medium Leather","inv_misc_leatherscrap_05",1],
@@ -245,14 +261,20 @@ const MATS = {
   2589: ["Linen Cloth","inv_fabric_linen_01",1],
   2592: ["Wool Cloth","inv_fabric_wool_01",1],
   2605: ["Green Dye","inv_potion_12",1],
+  2770: ["Copper Ore","inv_ore_copper_01",1],
+  2771: ["Tin Ore","inv_ore_tin_01",1],
+  2772: ["Iron Ore","inv_ore_iron_01",1],
   2836: ["Coarse Stone","inv_stone_09",1],
   2838: ["Heavy Stone","inv_stone_12",1],
   2840: ["Copper Bar","inv_ingot_02",1],
   2841: ["Bronze Bar","inv_ingot_bronze",1],
   3575: ["Iron Bar","inv_ingot_iron",1],
+  3576: ["Tin Bar","inv_ingot_05",1],
+  3858: ["Mithril Ore","inv_ore_mithril_02",1],
   3860: ["Mithril Bar","inv_ingot_06",1],
   4231: ["Cured Light Hide","inv_misc_pelt_wolf_01",1],
   4234: ["Heavy Leather","inv_misc_leatherscrap_07",1],
+  4289: ["Salt","inv_misc_dust_02",1],
   4304: ["Thick Leather","inv_misc_leatherscrap_08",1],
   4338: ["Mageweave Cloth","inv_fabric_mageweave_01",1],
   4359: ["Handful of Copper Bolts","inv_misc_gear_06",1],
@@ -264,6 +286,7 @@ const MATS = {
   8170: ["Rugged Leather","inv_misc_leatherscrap_02",1],
   8343: ["Heavy Silken Thread","inv_fabric_silk_02",1],
   10505: ["Solid Blasting Powder","inv_misc_powder_black",1],
+  10620: ["Thorium Ore","inv_ore_thorium_02",1],
   12359: ["Thorium Bar","inv_ingot_07",1],
   12365: ["Dense Stone","inv_misc_stonetablet_07",1],
   14047: ["Runecloth","inv_fabric_purplefire_01",1],
@@ -352,22 +375,53 @@ function realmPrices(blob) {
 // (item.craft, per item). item.via says which one the price is ("ah" or "craft"); item.ahPrice is always the auction
 // price; item.craftMissing lists materials with no price (no craft price then); item.craftVendor lists the materials bought from a vendor; item.craftSkill is the skill you
 // are missing when you have the profession but not enough skill.
-function applyPrices(items, prices, professions = {}) {   // prices: {itemId: copper}; returns count of items with a price
+// gathering: names of the gathering professions you have (see GATHERING). A material they refine (bar from ore,
+// cured hide) costs the cheaper of its own price and its ingredients' price; item.craftRefined maps each material
+// made that way to its raw ingredients per unit, [[id, qty], ...]; item.craftUnit maps every material (and raw
+// ingredient) to its price in copper per unit.
+function applyPrices(items, prices, professions = {}, gathering = []) {   // prices: {itemId: copper}; returns count of items with a price
   const can = new Map(Array.isArray(professions) ? professions.map(p => [p.toLowerCase(), MAX_SKILL])
                                                  : Object.entries(professions).map(([p, skill]) => [p.toLowerCase(), +skill || 0]));
+  const refiners = new Set(gathering);
+  // Cost of one unit of a material in copper: {copper, how: "ah" | "vendor" | "refine", raw: [[rawId, qty], ...]}.
+  const matCost = id => {
+    const ah = prices[id] || Infinity, vendor = VENDOR_PRICE[id] ?? Infinity;
+    let best = {copper: Math.min(ah, vendor), how: vendor <= ah ? "vendor" : "ah"};
+    const r = REFINE[id];
+    if (r && refiners.has(r.by)) {
+      let sum = 0;
+      const raw = [];
+      for (const [sid, q] of r.mats) {
+        const sub = matCost(sid);
+        if (sub.copper === Infinity) { sum = Infinity; break; }
+        sum += q * sub.copper;
+        for (const [rid, rq] of sub.how === "refine" ? sub.raw : [[sid, 1]]) raw.push([rid, q * rq / r.yield]);
+      }
+      if (sum / r.yield < best.copper) best = {copper: sum / r.yield, how: "refine", raw};
+    }
+    return best;
+  };
   let n = 0;
   for (const it of items) {
     const c = prices[it.id], recipe = RECIPES[it.id];
     it.ahPrice = c ? c / 100 : null;
-    it.craft = null; it.craftMissing = []; it.craftSkill = 0; it.craftVendor = [];
+    it.craft = null; it.craftMissing = []; it.craftSkill = 0; it.craftVendor = []; it.craftRefined = {}; it.craftUnit = {};
     const skill = can.get(it.category.toLowerCase());
     if (recipe && skill != null && skill < recipe.skill) it.craftSkill = recipe.skill;
     else if (recipe && skill != null) {
       let total = 0;
       for (const [id, qty] of recipe.mats) {
-        const ah = prices[id] || Infinity, vendor = VENDOR_PRICE[id] ?? Infinity, copper = Math.min(ah, vendor);
+        const {copper, how, raw} = matCost(id);
         if (copper === Infinity) it.craftMissing.push(MATS[id][0]);
-        else { total += qty * copper / 100; if (vendor <= ah) it.craftVendor.push(id); }
+        else {
+          total += qty * copper / 100;
+          it.craftUnit[id] = copper;
+          if (how === "vendor") it.craftVendor.push(id);
+          else if (how === "refine") {
+            it.craftRefined[id] = raw;
+            for (const [rid] of raw) it.craftUnit[rid] = matCost(rid).copper;
+          }
+        }
       }
       if (!it.craftMissing.length) it.craft = total / recipe.yield;
     }
@@ -379,10 +433,19 @@ function applyPrices(items, prices, professions = {}) {   // prices: {itemId: co
   }
   return n;
 }
+// The raw ingredients (ore, hide, salt) for `qty` of a material you make yourself, or null when you buy it.
+function refinedMats(item, id, qty) {
+  const raw = (item.craftRefined || {})[id];
+  if (!raw) return null;
+  return raw.map(([rid, rq]) => {
+    const n = Math.ceil(rq * qty - 1e-9);
+    return {id: rid, name: MATS[rid][0], icon: MATS[rid][1], quality: MATS[rid][2], qty: n, cost: n * item.craftUnit[rid]};
+  });
+}
 // How to craft `count` of an item: number of crafts and the materials to gather.
 function craftPlan(item, count) {
   const recipe = RECIPES[item.id], crafts = Math.ceil(count / recipe.yield);
-  return {crafts, yield: recipe.yield, mats: recipe.mats.map(([id, qty]) => ({id, name: MATS[id][0], icon: MATS[id][1], quality: MATS[id][2], qty: qty * crafts, vendor: (item.craftVendor || []).includes(id)}))};
+  return {crafts, yield: recipe.yield, mats: recipe.mats.map(([id, qty]) => ({id, name: MATS[id][0], icon: MATS[id][1], quality: MATS[id][2], qty: qty * crafts, cost: qty * crafts * item.craftUnit[id], vendor: (item.craftVendor || []).includes(id), refined: refinedMats(item, id, qty * crafts)}))};
 }
 // Self-found mode: for each item, the mob that needs the fewest kills at this character level.
 // item.farm = {mob, kills (expected kills per item), others: next best mobs} or null when nothing drops it / nothing is fightable yet.
@@ -494,6 +557,6 @@ function planRoute(items, {target = 50, tickets = 0, rep = 0, level = MAX_LEVEL,
 
 const DMF = {ITEMS, TICKET_VALUE, REP_PER_QUEST, DIPLOMAT, repPerQuest, REP_CAP, STANDINGS, MIN_LEVEL, MAX_LEVEL, GOALS, TICKET_NPC,
   WOWHEAD_ITEM_URL, WOWHEAD_SPELL_URL, WOWHEAD_FACTION_URL, DMF_FACTION, WOWHEAD_QUEST_URL, WOWHEAD_ZONE_URL, WOWHEAD_NPC_URL, ICON_URL,
-  parseAuctionator, realmPrices, DROPS_FROM, PROFESSIONS, MAX_SKILL, VENDOR_PRICE, RECIPES, MATS, applyPrices, applyFarm, calculate, planRoute, turnInsLeft, repFromStanding, repText};
+  parseAuctionator, realmPrices, DROPS_FROM, PROFESSIONS, GATHERING, GATHER_OF, MAX_SKILL, VENDOR_PRICE, RECIPES, REFINE, MATS, applyPrices, applyFarm, calculate, planRoute, turnInsLeft, repFromStanding, repText};
 if (typeof module !== "undefined") module.exports = DMF; else globalThis.DMF = DMF;
 })();
