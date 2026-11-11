@@ -14,7 +14,7 @@
   // The choices (reward, level, reputation, ticked boxes, skills, realm) are kept too, so a refresh restores them.
   const SETTINGS_KEY = "dmf-settings-v1";
   const settings = (() => { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch (e) { return {}; } })();
-  let savedNote = "";     // appended to the status line: where the prices came from
+  let statusLead = "All done! Prices loaded.";     // first part of the status line (changes when restored from the browser)
 
   let realms = null;      // {realm name: {itemId: copper}} for the loaded or saved file
   let prices = null;      // prices of the selected realm: {itemId: copper}
@@ -69,7 +69,7 @@
   const loader = UI.fileLoader(document.getElementById("loader"), {path: WTF_PATH, onFile: loadFile, onForget() {
     forgetSaved();
     realms = prices = null;
-    savedNote = "";
+    statusLead = "All done! Prices loaded.";
     loader.setSaved(false);
     loader.setLoaded(null);
     loader.setStatus("Saved prices forgotten. No file loaded.");
@@ -94,9 +94,7 @@
     const n = DMF.applyPrices(ITEMS, prices, professions(), gathering());
     const missing = ITEMS.length - n;
     loader.setStatus(
-      `Prices loaded (realm "${name}")${savedNote}. ` +
-      (missing ? `${missing} of ${ITEMS.length} items have no price yet; they're marked "No price yet" and listed last.`
-               : `All ${ITEMS.length} items have a price.`),
+      statusLead + (missing ? ` ${missing} ${missing === 1 ? "item has" : "items have"} no price yet, listed last.` : ""),
       "ok");
   }
 
@@ -123,7 +121,7 @@
     if (ssf) DMF.applyFarm(ITEMS, v.level);           // best mob per item for this level
     const rows = DMF.calculate(ITEMS, opts);          // reference list (one row per item)
     const plan = DMF.planRoute(ITEMS, {...opts, ssf});   // cheapest route (gold, or kills when self-found) respecting reputation caps
-    table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level, ssf});
+    table.render(rows, plan, {goal: v.goal, needed: v.target - v.tickets, hasPrices: !!realms, level: v.level, ssf, repBonus: v.repBonus});
   }
 
   async function loadFile(file) {
@@ -137,8 +135,8 @@
         realms[name] = {...own, __count: Object.keys(all).length};
       }
       const saved = writeSaved({name: file.name, savedAt: Date.now(), realms});
-      savedNote = saved ? ", saved in this browser" : "";
       loader.setSaved(saved);
+      statusLead = "All done! Prices loaded.";
       const names = Object.keys(realms).sort((a, b) => realms[b].__count - realms[a].__count);
       const realm = names.includes(settings.realm) ? settings.realm : names[0];
       filters.setRealms(names, realm);
@@ -160,7 +158,7 @@
     realms = saved.realms;
     const names = Object.keys(realms).sort((a, b) => (realms[b].__count || 0) - (realms[a].__count || 0));
     const when = new Date(saved.savedAt).toLocaleString([], {dateStyle: "medium", timeStyle: "short"});
-    savedNote = `, from ${saved.name} saved on ${when}`;
+    statusLead = `Welcome back! Using the prices you saved on ${when}.`;
     const realm = names.includes(settings.realm) ? settings.realm : names[0];
     filters.setRealms(names, realm);
     loader.setLoaded(saved.name);

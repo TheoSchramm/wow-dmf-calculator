@@ -1,5 +1,5 @@
 // Results component: the step-by-step route (cheapest way to reach the goal, respecting reputation caps),
-// then a reference list of every turn-in: price, cost per ticket and turn-ins left before its cap.
+// then a reference list of every turn-in: price, cost per ticket and remaining turn-ins before its cap.
 (() => {
   const UI = (window.UI = window.UI || {});
   const {esc, wowhead} = UI;
@@ -49,13 +49,15 @@
     if (!ssf) return pair(`Buy: ${qtyOf(s.items, s.item)}`, `Total: ${UI.money(s.cost * 10000)}`);
     const m = s.item.farm.mob;
     return pair(`Kill: ${mobLink(m)}`, `${zoneLink(m)}, ${levels(m)}`, `${pct(m.chance)} drop`)
-      + pair(`Until you loot: ${qtyOf(s.items, s.item)}`, `About <span class="route__qty">${kills(s.cost)}</span> kills`);
+      + pair(`Until you loot: ${qtyOf(s.items, s.item)}`, `About <span class="route__qty">${kills(s.cost)}</span> kills`)
+      + othersHtml(s);
   }
   const turnInSection = s =>
     line(`Complete: ${stepQuests(s).map(wowhead.questLink).join(" then ")} (${wowhead.npcLink(npcOf(s.item))}) <span class="route__qty">${s.turnIns}x</span>`)
     + pair(`Requires: ${s.item.qnt}x ${wowhead.itemLink(s.item)}`, `Rewards: ${tix(DMF.TICKET_VALUE[s.item.tier - 1])}`);
   const afterSection = s =>
-    pair(`You now have: ${tix(s.ticketsAfter)}`, `${wowhead.factionLink("Reputation")}: ${esc(DMF.repText(s.repBefore))} &rarr; ${esc(DMF.repText(s.repAfter))}`);
+    line(`You now have: ${tix(s.ticketsAfter)}`)
+    + line(`${wowhead.factionLink("Reputation")}: ${esc(DMF.repText(s.repBefore))} -&gt; ${esc(DMF.repText(s.repAfter))}`);
   const othersHtml = s => s.item.farm && s.item.farm.others.length
     ? `<div class="route__meta">Also drops it:${s.item.farm.others.map(m => `<br>${mobLink(m)} (${esc(m.zone)}, ${levels(m)}, ${pct(m.chance)})`).join("")}</div>` : "";
 
@@ -65,7 +67,6 @@
         ${wowhead.itemIcon(s.item, {category: s.item.category})}
         <div class="route__text">
           <div class="route__action">${turnInSection(s)}${sep}${getItems(s, ssf)}${sep}${afterSection(s)}</div>
-          ${ssf ? othersHtml(s) : ""}
         </div>
       </li>`).join("");
     return `
@@ -121,10 +122,18 @@
 
   const money = (v, unit) => v == null ? '<span class="no-price">No price</span>' : UI.money(v * unit);
 
+  // reputation one turn-in gives; tier 5 gives it only up to the next rank, then its "More ..." quest gives none
+  function repCell(r, repBonus) {
+    const gain = `+${DMF.repPerQuest(repBonus)}`;
+    if (r.tier !== 5) return gain;
+    const next = DMF.repText(DMF.REP_CAP[4] + 1).split(" ")[0];   // Friendly 5999/6000 is the last point before this rank
+    return `${gain}<span class="left-cap rep-note" title="Gives reputation until ${esc(DMF.repText(DMF.REP_CAP[4]))}. After that the &quot;More ...&quot; quest gives tickets but no reputation.">until ${esc(next)}</span>`;
+  }
+
   function leftCell(r) {
     if (r.turnInsLeft === Infinity) return '<span title="Never closes: after Friendly 5999 the &quot;More ...&quot; quest keeps giving tickets">No limit</span>';
     const cap = DMF.repText(DMF.REP_CAP[r.tier - 1]);
-    return `<span title="Offered until ${esc(cap)}">${r.turnInsLeft}</span><span class="left-cap">until ${esc(cap)}</span>`;
+    return `<span title="The quest is offered until your reputation reaches ${esc(cap)}">${r.turnInsLeft}</span><span class="left-cap">closes at ${esc(cap)}</span>`;
   }
 
   // Self-found reference table cell: best mob.
@@ -145,7 +154,8 @@
               <th scope="col">Item</th>
               <th scope="col" class="num" data-ref="h1">Price each</th>
               <th scope="col" class="num" data-ref="h2">Cost per ticket</th>
-              <th scope="col" class="num">Turn-ins left</th>
+              <th scope="col" class="num">Reputation</th>
+              <th scope="col" class="num">Remaining Turn-ins</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -155,7 +165,7 @@
     const summary = root.querySelector('[data-ref="summary"]');
 
     return {
-      render(rows, plan, {goal, needed, hasPrices, level, ssf}) {
+      render(rows, plan, {goal, needed, hasPrices, level, ssf, repBonus = 0}) {
         tableRoot.querySelector('[data-ref="h1"]').textContent = ssf ? "Best mob" : "Price each";
         tableRoot.querySelector('[data-ref="h1"]').classList.toggle("num", !ssf);
         tableRoot.querySelector('[data-ref="h2"]').textContent = ssf ? "Kills per ticket" : "Cost per ticket";
@@ -181,6 +191,7 @@
             <td>${itemCell(r, routeIds.has(r.id), ssf)}</td>
             <td class="${ssf ? "" : "num"}">${ssf ? mobCell(r) : money(r.price, 100)}</td>
             <td class="num">${ssf ? (cost(r) == null ? '<span class="no-price">-</span>' : (cost(r) < 10 ? cost(r).toFixed(1) : kills(cost(r)))) : money(r.perTicket, 100)}</td>
+            <td class="num">${repCell(r, repBonus)}</td>
             <td class="num">${leftCell(r)}</td>
           </tr>`).join("");
       },

@@ -168,7 +168,7 @@ code {
   inset: 0;
   pointer-events: none;
   border: 40px solid transparent;
-  border-image: url("../assets/ui/frame-border-gold.png") 32 / 40px round;
+  border-image: url("../assets/ui/frame-border.png") 32 / 40px round;
 }
 
 /* UI-DialogBox-Gold-Header plate, stretched between its ornamented ends */
@@ -184,7 +184,7 @@ code {
   max-width: calc(100% - 60px);
   border-style: solid;
   border-width: 0 28px;
-  border-image: url("../assets/ui/header-gold.png") 0 22 fill / 0 28px stretch;
+  border-image: url("../assets/ui/header.png") 0 22 fill / 0 28px stretch;
   font-size: 16px;
   font-weight: normal;
   line-height: 50px;
@@ -651,6 +651,10 @@ code {
   color: var(--normal);
   text-shadow: var(--shadow);
 }
+.rep-note { white-space: nowrap; }
+/* every column after the item is centred, header and cells alike (also the self-found "Best mob" column) */
+.ah-table th:not(:first-child), .ah-table td:not(:first-child) { text-align: center; }
+.ah-table .left-cap { text-align: center; }
 .left-cap { display: block; font-size: 11px; color: var(--muted); font-family: var(--font); }
 .ah-table tr.is-closed td { opacity: 0.55; }
 
@@ -724,7 +728,7 @@ code {
 .ah-table tbody tr.is-best { background-image: url("../assets/ui/row-highlight.png"); }
 
 .ah-table .num {
-  text-align: right;
+  text-align: center;
   font-family: var(--font-number);
   font-size: 15px;
   font-variant-numeric: tabular-nums;
@@ -885,7 +889,7 @@ code {
   text-decoration: none;
 }
 .repo-link:hover, .repo-link:focus-visible { color: var(--highlight); text-decoration: underline; }
-.site-version { margin-left: 8px; color: var(--disabled); }
+.page-footer .site-version { color: var(--disabled); }
 .repo-link__icon { flex: none; filter: drop-shadow(1px 1px 0 #000); }
 
 .page-footer .disclaimer {

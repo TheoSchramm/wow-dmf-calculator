@@ -110,7 +110,7 @@ Goals:`);
         - Turn in at: ${r.questList.map(q => `${q.name} ${DMF.WOWHEAD_QUEST_URL(q.id)}`).join(", then repeat ")}
         - You will need ${r.quests} quests (${r.items} items) to achieve +${r.ticketsGained} (${tickets + r.ticketsGained} total) tickets.${r.live ? `
         - Total price of: ${r.total.toFixed(2)}g.` : ""}${r.overCap ? `
-        - Only ${r.untilCap} turn-ins left before the quest closes at ${DMF.repText(DMF.REP_CAP[r.tier - 1])}; this item alone can't get you there.` : ""}
+        - Only ${r.untilCap} turn-ins remaining before the quest closes at ${DMF.repText(DMF.REP_CAP[r.tier - 1])}; this item alone can't get you there.` : ""}
 `);
   }
 }

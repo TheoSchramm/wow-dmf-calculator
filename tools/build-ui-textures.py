@@ -90,6 +90,7 @@ def main():
     save(nine_slice(fetch("Tooltips/UI-Tooltip-Border")), "tooltip-border")
     save(fetch("DialogFrame/UI-DialogBox-Background"), "frame-background")
     save(crop_alpha(fetch("DialogFrame/UI-DialogBox-Gold-Header")), "header-gold")
+    save(crop_alpha(fetch("DialogFrame/UI-DialogBox-Header")), "header")
     save(crop_alpha(fetch("DialogFrame/UI-DialogBox-Divider")), "divider")
     save(remove_dragon_tail(fetch("DialogFrame/UI-DialogBox-Gold-Dragon")), "dragon")
     save(fetch("FrameGeneral/UI-Background-Rock"), "page-background")
